@@ -1,0 +1,63 @@
+---
+title: "TBL3 Exercise: Logistic and Poisson Regression of Counts and Meta-Analysis Paper Searching"
+author: "Kris Voss"
+date: "February 14, 2017"
+output: pdf_document
+---
+
+```{r}
+library(Sleuth2)
+library(dplyr)
+library(ggplot2)
+```
+# 1. Meta-Analysis Search Terms and Paper Vetting (+25)
+
+In class this week, we decided to address the following question via a meta-analysis approach: **Are parasite loads in ungulates increasing with climate warming?** The next phase of preparation involves vetting and refining search terms to find papers that actually quantify this effect. In conjunction with the other group, you should conduct a search in a scientific article database using [boolean search logic](https://www.mcgill.ca/caps/files/caps/gcs2014_linkedinbooleansearchtips.pdf) to find papers that might be useful in our meta-analysis. The goal of this effort will be to create an Excel file that vets our research question and search terms.
+
+1. One group will use the Proquest database and the other group will use the EBSCOhost database (you can find these linked on the library's website) to do the following keyword search: ungulate AND parasite AND "climate change" in the full text of the articles. 
+
+2. Download your searched items as a spreadhseet or delimited text file from both databases into one Google Sheets file. Randomly select 20 papers from this list. Include a separate tab for these 20 papers.
+
+3. Each person should then be assigned two papers to examine. For each paper, read through the abstract and skim the article. Then in a separate column on the sheet, code the article as 0 = Not Relevant to Question or 1 = Relevant to Question. On another column, code whether the authors quantitatively (i.e. with t-tests, regression, chi-square etc.) assessed the effect of climate change on parasite abundance in ungulates. Use 0 = Not Quantitatively Assessed and 1 = Quantiatively Assessed.
+
+4. Your final Google Sheet should have two tabs: (1) All the papers found in the database with at least author, title, and journal title, (2) The twenty randomly selected articles with each coded for relevance and quantitative assessment. Please e-mail me the link to this file by 5:00 pm on Monday, February 20.
+
+5. Be prepared to discuss in class whether you think the meta-analysis will be feasible based on this pilot assessment of papers, and how we should adjust the search terms to find more relevant papers or adjust the question based on the papers you read. 
+
+# 2. Logistic Regression of Binomial Counts: Chapter 21, Data Problem 16 (+25)
+
+Perform the analyses mentioned in R, and write a coherent paragraph that describes (a) the statistical method used to assess the relationship, (b) the strength of the dose-response relationship between aflatoxicol concentration and odds of developing a tumor (with a 95% confidence interval), (c) an interpretation of the intercept (with 95% confidence interval), (d) calculate the EC50 (i.e. the dose at which 50% of fish would get liver tumors) and (e) reference a well-constructed figure that shows the relationship highlighting the LD50. Make sure to check for extra-binomial variation and adjust your findings as needed.
+
+10 points extra credit: Use simulation to calculate the standard error of your estimate for LD50. Hint: The intercept and slope both have normal distributions.
+
+5 points extra credit: Draw the uncertainty bounds of the relationship on your graph.
+
+```{r}
+notatumor$Prop <- cbind(ex2116$Tumor/ex2116$Total)
+plot(Prop/(1-Prop) ~ Dose, data = notatumor)
+itsnot.model <- glm(cbind(Tumor, (Total - Tumor)) ~ Dose, data = notatumor, family = "quasibinomial")
+summary(itsnot.model)
+confint(itsnot.model)
+halfdead <- (log(0.5/(1-0.5)) + 0.8670)/14.3338
+tumor.plot <- ggplot(notatumor, aes(Dose, Prop))
+tumor.plot + geom_point() + stat_smooth(notatumor, aes(x=Dose, y=Prop), method = "glm")
+```
+
+**
+
+# 3. Poisson Regression I: Model Selection: Chapter 22, Computational Exercise 18 (+25)
+
+(a) Complete the model fit from part (a). Realize this is a **rich** model, but that you will be selecting from a subset of predictors later in this question.
+
+(b) Check for extra-Poisson variation in part (a) using the method we discussed in class. Should extra-Poisson variation be included? Give an explanation for why extra-Poisson variation might be present or absent other than this numerical approach.
+
+(c) Account for extra-Poisson variation as needed, then use the ```anova()``` function to determine which variables to drop sequentially (part (b) in book). Drop as many as needed.
+
+(d) Write a summary paragraph that explains how the remaining variables (part (c) in book) relate to the number of native species being sure to express uncertainty (i.e. confidence intervals) for those relationships
+
+
+# 4. Poisson Regression II: Model Selection: Chapter 22, Data Problem 25.
+
+Perform the analyses mentioned in R but make sure to do so in a way that makes the intercept of your model interpretable rather than meaningless. Then write a coherent paragraph that describes (a) the statistical method used to assess the relationship including any transformations or adjustments you made, (b) the strength of the relationship between male body size and number of mates (along with 95% confidence interval), (c) an interpretation of the intercept (with 95% confidence interval), and (d) reference a well-constructed figure that shows the relationship. Make sure to check for extra-Poisson variation and adjust your findings as needed.
+
+5 points extra credit: Draw the uncertainty bounds of the relationship on your graph.
