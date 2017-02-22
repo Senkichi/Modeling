@@ -1,0 +1,198 @@
+---
+title: "Binary Logistic Regression & Meta-Analysis Prep: TBL 2"
+author: "Sam, Panmei, Jeffrey, Matt, Alex"
+date: "February 13, 2017"
+output: pdf_document
+---
+
+## 1. Meta-Analysis Background Research (+20, +10 for each question)
+```{r,eval=T}
+setwd("~/Documents/Spring 2017/Modeling")
+library(Sleuth2)
+```
+
+For each of the questions your group chose, please do the following background research to "vet" the question:
+
+1. Carefully think through the question as written. Remember that the goal of most meta-analyses is to quantify an average "effect size" between an independent and dependent variable. This effect size could be the difference between treatment and controls or the strength of a regression/correlation relationship, and frequently can be classified as + (positive), - (negative), or 0 (no effect) . Reword the question so it is clear what effect size you will be measuring.
+
+**Dependent: invasive success**
+**Independent: Life History Characteristics**
+**High reproductive allocation, rapid vegetation growth, high potential for acclimation**
+
+**How does high reproductive allocation, rapid vegetation growth, and high potential for acclimation positively affect invasive success for wetland invasive plants?**
+
+2. Has a meta-analysis already been done? If so, how can the question be revised to provide a different spin to the meta-analysis?
+
+**No meta-analysis has been conducted looking at these three life history traits of wetland invasive plant species.**
+
+3. Do a cursory search of the literature. Find 3 articles that **quantify** the effect you are interested in. If you cannot find three papers, try to revise it and search again.
+
+**Lavergne, S., Molofsky, J. (2004) Reed Canary Grass (Phalaris arundinacea) as a biological model in the study of plant invasions. Critical Reviews in Plant Sciences, Vol. 25(5), 415-429.**
+**Reed Canary Grass is a common invasive wetland plant that has both life history traits of interest and the paper analyzes invasiveness.**
+
+**Ren, M., Zhang, Q. (2009) The relative generality of plant invasion mechanisms and predicting future invasive plants. Weed Research, Vol. 49(5), 449-460.**
+**This paper analyzes invasive plant mechanisms and contains both of the life history traits for our questions.**
+
+**Kercher, S., Zedler, J. (2010) Causes and consequences of invasive plants in wetlands: opportunities, opportunists, and outcomes. Critical Reviews in Plant Sciences, Vol. 23(5) 431-452.**
+**This paper goes into how wetland plants become invasive and goes into how rapid vegetation growth plays a major role in invasiveness. **
+
+**Critical Reviews in Plant Sciences would be a good journal source to look at to find more papers.**
+
+After this background research, write a one paragraph summary that:
+
+(a) States your final revised question based on (1) - (3).
+(b) What is(are) the dependent (Y) and independent (X) variables being investigated by this question?
+(c) Cites the three articles you found and how they relate tot he question of interest (one sentence is fine.)
+(d) Whether you think a novel meta-analysis would be feasible. Feasible means there is enough literature (10+ papers) after a thorough search (you just did a cursory search) is conducted. Novel means a meta-analysis has not been done.
+
+**After several revisions we determined that this would be our final revised questions. How does high reproductive allocation, and rapid vegetation growth, positively affect invasive success for wetland invasive plants? We initially had high potential for acclimation as another life history characteristic but very rarely was this sited specifically in literature. Our independent variables are high reproductive allocation and rapid vegetation growth while our dependent variable is invasive success. This meta-analysis is extremely feasible because a lot of research has gone into looking at invasive wetlands plants. In addition no meta-analysis has been conducted specifically looking at wetland plants. **
+
+Question Reminder
+
+Matt, Jeff, Panmei, Sam, Alex:
+
+1. What life history characteristics correspond to invasive success for wetland invasive plants?
+
+2. Has ungulate disease frequency inccreased with climate warming?
+
+**Dependent: Disease Frequency**
+**Independent: Global Climate Change**
+**Parasites host relationship, Disease carrying parasites**
+**Is the relationship of ungulate parasite frequency increasing with global climate change?**
+
+**No meta-analysis has been conducted involving this question**
+
+**Hoberg, E., Jenkins, E., Kutz, S. (2008). Pathogens of domestic and free-ranging ungulates: global climate change in temperate to boreal latitudes across North America. Epiz, Vol. 27(2), 511-528.**
+**Discusses the increased frequency of pathogen range that has led to increased parasite loads for ungulates.**
+
+**Jenkinds E. (2005). Ecological investigation of a new host-parasite relationship: Parelaphostrongylus odocoilei in thinhorn sheep (Ovis dalli), Doctoral Dissertation, University of Saskatchewan.**
+**This paper goes into a new relationship between a ungulate host and a parasite. The authors comment on how this parasite was able to expand its range into thinhorn sheep due to global climate change.**
+
+**Hoberg, E., Jenkins, E., Kutz, S., Polley, L. (2005). Global warming is changing the dynamics of Arctic host-parasite systems. Proc. Roy. Soc. Lond., B, boil. Sci., Vol. 272, 2571-2576.**
+**The authors of this paper discuss the changes in parasite host relationships for a wide variety of species in the arctic. For ungulate species they found that some parasite life cycles are prolonged with increased temperatures particularly for parasites that live on ungulate hosts.**
+
+**We determined that this will be our final meta-analysis questions. Is the relationship of ungulate parasite frequency increasing with global climate change? This question is not only broad enough to get a large quantity of relevant papers, but it is also specific enough to look at cause and effect. Our independent variable in this question is Global Climate Change, while our dependent variable is parasite frequency. Initially the dependent variable was disease frequency but few papers were able to accurately quantify this variable across wild ungulate populations. This question would serve as a model meta-analysis to determine if parasite frequency is actually effected by global climate change in ungulates. There has been no previous meta-analysis looking to quantify this question.**
+
+
+## 2. Binary Logistic Regression, Ch. 20 Data Problem 15 (+50)
+
+I have broken up the question into manageable pieces:
+
+(a) Draw a picture of the "ring" setup at each site. Upload the image here. (+5)
+
+![Forest Rings](Rings.jpg)
+
+(b) The total radius from each site to the outer edge of the ring is given in Display 20.15. Calculate the area of each **ring**. Realize you will have to use the geometric formula for the area of a circle and then subtract to find the area of each ring. (+5)
+
+```{r,eval=T}
+owl<-ex2015
+owl2<-owl[,2:8]/100
+owl3<-cbind(owl$Site,owl2)
+
+R1A<-pi*(0.91^2)
+R1A
+R2A<-pi*(1.18^2)-R1A
+R2A
+R3A<-pi*(1.40^2)-pi*(1.18^2)
+R3A
+R4A<-pi*(1.60^2)-pi*(1.40^2)
+R4A
+R5A<-pi*(1.77^2)-pi*(1.60^2)
+R5A
+R6A<-pi*(2.41^2)-pi*(1.77^2)
+R6A
+R7A<-pi*(3.38^2)-pi*(2.41^2)
+R7A
+```
+
+(c) Multiply each ring percentage in the data by its area for each of the 60 sites. This will give you the amount of forest in each ring. Then sum these forested areas to determine the total area of intact forest around the site. Finally, divide this number by the largest area and multiply by 100. The result will be ONE number for each site representing the percentage of forest within the largest circle. (+5)
+
+```{r,eval=T}
+area<-cbind(R1A, R2A, R3A, R4A, R5A, R6A, R7A)
+owl4<-owl3[,2:7]*area #amount of forest in each ring
+owl5<-cbind(owl$Site,owl4)
+forest<-(colSums(owl4)/sum(owl4))*100
+```
+
+(d) Now, using the results from (c): "Apply the two-sample t-tools to these data to see whether the percentage of mature forest is larger at nest sites than at random sites." You should report the difference, a confidence interval for the difference, a p-value, and reference a figure. (+10)
+
+```{r,eval=T}
+random<- owl[owl$Site=="Random",]
+nest<-owl[owl$Site=="Nest",]
+forest.random<-(colSums(random[,2:8])/(sum(random[,2:8])))*100
+forest.random
+forest.nest<-(colSums(nest[,2:8])/(sum(nest[,2:8])))*100
+forest.nest
+t.test(forest.random, forest.nest)
+boxplot(forest.random, forest.nest, xlab="Nested vs. Random Sites",ylab="Percent of Mature Forest",main="Mature Forest at Different Sites")
+```
+
+(e) Again, using the results from (c): Use logistic regression to investigate how percentage of mature forest relates to whether a site is a nest site. You should report an appropriate slope, its confidence interval, a p-value and reference a figure. (+10)
+
+```{r,eval=T}
+owl.site<-owl$Site
+RM<-rowMeans(owl3[,2:8])
+owl6<-cbind(RM, owl3)
+site.dummy<-as.numeric(owl$Site=="Nest")
+owl7<-cbind(site.dummy,owl3)
+percent.model<-glm(owl.site~RM,family = binomial,data=owl6)
+summary(percent.model)
+confint(percent.model)
+plot(site.dummy~RM,pch=19,xlab="Tree Forest Area", ylab="Random or Nest Site",main="Forest Area in Random vs. Nest Areas")
+x.owl<-seq(from=0, to=1,by=0.01)
+logits.owl<- -6.236+9.350*x.owl
+y.owl<-exp(logits.owl)/(1+exp(logits.owl))
+lines(x.owl,y.owl)
+```
+
+(f) What is the pseudo$R^2$ for your model in (e)? (+5)
+
+```{r,eval=T}
+psuedo.rsq<-((83.178-69.372)/83.178)*100
+psuedo.rsq
+```
+
+(g) Using your model, what is the probability that a site with 30% mature forest is a nesting site rather than a random site. (+5)
+
+```{r,eval=T}
+predict(percent.model,owl7,se.fit=F,interval="prediction",level=0.95)
+```
+**The probability that a site with 30% mature forest is a nesting site rather than a random site is 0.37.**
+
+(h) Using your model, by what factor does the odds of a site being a nest site change (state which: increase or decrease) for a 10% increase in mature forest around the site. (+5)  
+
+**The odds of a site being a nest site are increased by 2.547 after a 10% increase in mature forest.**
+
+## 3. Binary Logistic Regression, Ch. 20 Data Problem 16 (+30)
+
+Even though the text indicates that either physical measurements or survival can be treated as a response, for this question you will be assessing survival as the response. Again, answer the following questions.
+
+(a) Explain why logistic regression is the appropriate statistical method for this question. (+4)
+
+**Logistic regression is an appropriate model to use for the Bumpus natural selection data because the dependent variable of alive or dead is categorical. The independent variables would then be physical characteristics measured for the sparrows. There is also the categorical variable of adult and juvenile that may play a role in this logistic regression.**
+
+(b) Why would it be ill-advised to include **all** of the body size measurements in your model? There is a statistical reason for this which we discussed in BL652. (+3)
+
+**It would be ill-advised to include all of the body size measurements because the more variables you include creates additional degrees of freedom. The strongly correlated variables decrease in impact with the addition of more variables.**
+
+(c) By some method of your choice, choose ONE of the body size measurements to include as a predictor in your model of survival. Explain how you chose which variable to include. (+3) 
+
+```{r,eval=T}
+sparrow<-ex2016
+sparrow.model<- glm(Status~., family=binomial, data=sparrow)
+summary(sparrow.model)
+Sparrow.model2<- glm(Status~TL, family=binomial, data=sparrow)
+summary(Sparrow.model2)
+```
+
+(d) Construct a logistic regression model that assesses how the body size measurement you chose in (c) influences probability of survival. If appropriate, your model should allow the effect of body size to change for juveniles and adults. Construct a figure to show your model and write results text that explains what your modeling efforts indicate about the effect of body size on survival in juvenile and adult sparrows (+15).
+
+**For our logistic regression model we assessed how Total Length influenced survival in the Bumpus natural selection experiment. From the logistic regression model it was determined that every one mm increase in total length corresponed to a -.34 decrease in the logit status ( Z value= -3.719, Pr(>|z|)= 0.0002). The boxplot graph above describes the relationship with Total Length on the Y axis and binomial variables of Perished and Survived on the x axis with error bars added. The other binomial variable of juvenile and adult was found to have no significant relationship to the independent variable of Total Length.**
+
+```{r,eval=T}
+plot(TL~Status, data=sparrow, ylab="Tail Length", main="Tail Length in Perished and Survived Sparrows")
+```
+
+(e) Should any other body size variables be added to your model in (d)? If so, which and why? If not, why? Please argue coherently with statistical support. (+5) 
+**By running a logistic regression model assessing how all physical characteristics are related to the binomial variable of Status it was determined that weight (WT) should also be included in the model (z value= -2.529, Pr(>|z|) = 0.011437). Besides WT and TL no other variables should be included in the logistic regression model.**
+ 
