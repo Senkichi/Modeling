@@ -7,7 +7,7 @@ output: pdf_document
 
 ## 1. Meta-Analysis Background Research (+20, +10 for each question)
 ```{r,eval=T}
-setwd("~/Documents/Spring 2017/Modeling")
+
 library(Sleuth2)
 ```
 
@@ -111,10 +111,21 @@ R7A
 area<-cbind(R1A, R2A, R3A, R4A, R5A, R6A, R7A)
 owl4<-owl3[,2:7]*area #amount of forest in each ring
 owl5<-cbind(owl$Site,owl4)
-forest<-(colSums(owl4)/sum(owl4))*100
+forest<-(rowSums(owl4)/(pi*(3.38^2)))*100
 ```
 
 (d) Now, using the results from (c): "Apply the two-sample t-tools to these data to see whether the percentage of mature forest is larger at nest sites than at random sites." You should report the difference, a confidence interval for the difference, a p-value, and reference a figure. (+10)
+```{r} 
+###this is sam's take on it
+forest.random2 <- forest[1:30] ##vector of random area rowsums/bigarea * 100
+forest.nest2 <- forest[31:60] ##vector of nest area rowsums/bigare * 100
+t.test(forest.random2, forest.nest2)
+boxplot(forest.random2, forest.nest2, xlab="Nested vs. Random Sites",ylab="Percent of Mature Forest",main="Mature Forest at Different Sites", names = c("Random", "Nest"))
+
+
+```
+**A significant difference (p-value = 0.03262) in the percent of mature forest surrounding the sample site was found between nest sites and randomly chosen sites. There was on average 8.805% (95%CI 0.8248-18.4365) more mature forest at nest sites than at randomly chosen forest sites. This would suggest that this species of owl prefers to make its nest in forested area with more mature forest than the average makeup of the forest.**
+
 
 ```{r,eval=T}
 random<- owl[owl$Site=="Random",]
