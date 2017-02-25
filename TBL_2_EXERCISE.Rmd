@@ -170,11 +170,15 @@ psuedo.rsq
 (g) Using your model, what is the probability that a site with 30% mature forest is a nesting site rather than a random site. (+5)
 
 ```{r,eval=T}
-predict(percent.model,owl7,se.fit=F,interval="prediction",level=0.95)
+exp(-1.98029)/(1+exp(0.03401*0.3 ))
 ```
-**The probability that a site with 30% mature forest is a nesting site rather than a random site is 0.37.**
+**The probability that a site with 30% mature forest is a nesting site rather than a random site is 6.87.**
 
 (h) Using your model, by what factor does the odds of a site being a nest site change (state which: increase or decrease) for a 10% increase in mature forest around the site. (+5)  
+
+```{r}
+exp(-1.98029)/(1+exp(0.03401*0.1)) ##this doesn't seem quite right to me but im not sure why
+```
 
 **The odds of a site being a nest site are increased by 2.547 after a 10% increase in mature forest.**
 
