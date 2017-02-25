@@ -142,11 +142,10 @@ boxplot(forest.random, forest.nest, xlab="Nested vs. Random Sites",ylab="Percent
 
 ```{r,eval=T}
 owl.site<-owl$Site
-RM<-rowMeans(owl3[,2:8])
-owl6<-cbind(RM, owl3)
+owl6<-cbind(owl3, forest)  ##rebound with updated rowmeans
 site.dummy<-as.numeric(owl$Site=="Nest")
 owl7<-cbind(site.dummy,owl3)
-percent.model<-glm(owl.site~RM,family = binomial,data=owl6)
+percent.model<-glm(owl.site~forest,family = binomial,data=owl6)
 summary(percent.model)
 confint(percent.model)
 plot(site.dummy~RM,pch=19,xlab="Tree Forest Area", ylab="Random or Nest Site",main="Forest Area in Random vs. Nest Areas")
@@ -154,7 +153,12 @@ x.owl<-seq(from=0, to=1,by=0.01)
 logits.owl<- -6.236+9.350*x.owl
 y.owl<-exp(logits.owl)/(1+exp(logits.owl))
 lines(x.owl,y.owl)
+exp(0.03401)
 ```
+
+**The percentage of mature forest had a significant positive correlation (p-value = 0.0388) with the liklihood that a site was a nest site. Each percent of mature forest corresponded to a 3.46% (95% CI .33%-7.12%) increase in the odds of a site being a nest site.** ##check my wording here, I'm also not sure how the figure should be referenced
+
+
 
 (f) What is the pseudo$R^2$ for your model in (e)? (+5)
 
