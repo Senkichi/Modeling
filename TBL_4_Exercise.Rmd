@@ -22,6 +22,16 @@ Please report your progress on these tasks this week. for this question.
 
 I have uploaded data from the EUSE study to D2L. Recall that the EUSE study investigated the effect of urbanization on stream ecosystems in nine different cities. Of particular interest to the investigators is how percent embeddedness behaves as urbanization increases, what the percent embeddedness is in absence of urbanization, and whether the relationship varies by city and how much. For reference, percent embededdness is the proportion of cobble-sized rocks (generally good aquatic habitat) buried in fine sediments (generally poor aquatic habitat).
 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(lme4)
+library(nlme)
+euse <- read.csv("TBL4 Exercise Data.csv")
+colnames(euse) <- c("station", "city", "MANUII", "PerEmbed", "EPT")
+euse$factor <- factor(euse$city)
+```
+
 (a) Write out a coherent hypothesis and rationale for how you expect percent embeddedness to change as urbanization increases. (+5)
 
 (b) Construct a completely fixed-effects model where you model the effect of urbanization on the percent embeddedness and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on percent embeddedness varies by city, (b) the estimated percent embeddedness in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
