@@ -116,9 +116,9 @@ forest<-(rowSums(owl4)/(pi*(3.38^2)))*100
 
 (d) Now, using the results from (c): "Apply the two-sample t-tools to these data to see whether the percentage of mature forest is larger at nest sites than at random sites." You should report the difference, a confidence interval for the difference, a p-value, and reference a figure. (+10)
 ```{r} 
-###this is sam's take on it
-forest.random2 <- forest[1:30] ##vector of random area rowsums/bigarea * 100
-forest.nest2 <- forest[31:60] ##vector of nest area rowsums/bigare * 100
+
+forest.random2 <- forest[1:30] 
+forest.nest2 <- forest[31:60] 
 t.test(forest.random2, forest.nest2)
 boxplot(forest.random2, forest.nest2, xlab="Nested vs. Random Sites",ylab="Percent of Mature Forest",main="Mature Forest at Different Sites", names = c("Random", "Nest"))
 
@@ -142,7 +142,7 @@ boxplot(forest.random, forest.nest, xlab="Nested vs. Random Sites",ylab="Percent
 
 ```{r,eval=T}
 owl.site<-owl$Site
-owl6<-cbind(owl3, forest)  ##rebound with updated rowmeans
+owl6<-cbind(owl3, forest)  
 site.dummy<-as.numeric(owl$Site=="Nest")
 owl7<-cbind(site.dummy,owl3)
 percent.model<-glm(owl.site~forest,family = binomial,data=owl6)
@@ -177,7 +177,7 @@ exp(-1.98029)/(1+exp(0.03401*0.3 ))
 (h) Using your model, by what factor does the odds of a site being a nest site change (state which: increase or decrease) for a 10% increase in mature forest around the site. (+5)  
 
 ```{r}
-exp(-1.98029)/(1+exp(0.03401*0.1)) ##this doesn't seem quite right to me but im not sure why
+exp(-1.98029)/(1+exp(0.03401*0.1)) 
 ```
 
 **The odds of a site being a nest site are increased by 2.547 after a 10% increase in mature forest.**
