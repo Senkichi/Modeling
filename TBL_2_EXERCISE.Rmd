@@ -194,9 +194,18 @@ sparrow.model<- glm(Status~., family=binomial, data=sparrow2)
 biggest <- formula(glm(Status ~ .,data = sparrow2))
 sparrow.step <- step(sparrow.model, scope = biggest, direction = "back")
   summary(sparrow.model)
-Sparrow.model2<- glm(Status~TL, family=binomial, data=sparrow)
-summary(Sparrow.model2)
+Sparrow.modelTL<- glm(Status~TL, family=binomial, data=sparrow)
+summary(Sparrow.modelTL)
+Sparrow.modelKL<- glm(Status~KL, family=binomial, data=sparrow)
+summary(Sparrow.modelKL)
+Sparrow.modelWT<- glm(Status~WT, family=binomial, data=sparrow)
+summary(Sparrow.modelWT)
+Sparrow.modelHL<- glm(Status~HL, family=binomial, data=sparrow)
+summary(Sparrow.modelHL)
+anova(Sparrow.modelHL,Sparrow.modelWT,Sparrow.modelKL,Sparrow.modelTL)
 ```
+
+**In order to choose what variable is selected for the model, first a rich model is fit using all variables. Then using backwards elimination, the model with the lowest AIC is selected. This model includes the different body size measurements like TL, KL, WT, and HL. In order to determine one body size measurement that best predicts survival in the model individual models were run using and then an anova was performed to determine which specific body size measurement is the best predictor or survival. The model with the lowest Residual Deviance is the model that best predicts, therefore TL is the best predictor of Status.**
 
 (d) Construct a logistic regression model that assesses how the body size measurement you chose in (c) influences probability of survival. If appropriate, your model should allow the effect of body size to change for juveniles and adults. Construct a figure to show your model and write results text that explains what your modeling efforts indicate about the effect of body size on survival in juvenile and adult sparrows (+15).
 
