@@ -127,17 +127,6 @@ boxplot(forest.random2, forest.nest2, xlab="Nested vs. Random Sites",ylab="Perce
 **A significant difference (p-value = 0.03262) in the percent of mature forest surrounding the sample site was found between nest sites and randomly chosen sites. There was on average 8.805% (95%CI 0.8248-18.4365) more mature forest at nest sites than at randomly chosen forest sites. This would suggest that this species of owl prefers to make its nest in forested area with more mature forest than the average makeup of the forest.**
 
 
-```{r,eval=T}
-random<- owl[owl$Site=="Random",]
-nest<-owl[owl$Site=="Nest",]
-forest.random<-(colSums(random[,2:8])/(sum(random[,2:8])))*100
-forest.random
-forest.nest<-(colSums(nest[,2:8])/(sum(nest[,2:8])))*100
-forest.nest
-t.test(forest.random, forest.nest)
-boxplot(forest.random, forest.nest, xlab="Nested vs. Random Sites",ylab="Percent of Mature Forest",main="Mature Forest at Different Sites")
-```
-
 (e) Again, using the results from (c): Use logistic regression to investigate how percentage of mature forest relates to whether a site is a nest site. You should report an appropriate slope, its confidence interval, a p-value and reference a figure. (+10)
 
 ```{r,eval=T}
@@ -156,7 +145,7 @@ lines(x.owl,y.owl)
 exp(0.03401)
 ```
 
-**The percentage of mature forest had a significant positive correlation (p-value = 0.0388) with the liklihood that a site was a nest site. Each percent of mature forest corresponded to a 3.46% (95% CI .33%-7.12%) increase in the odds of a site being a nest site.** ##check my wording here, I'm also not sure how the figure should be referenced
+**The percentage of mature forest had a significant positive correlation (p-value = 0.0388) with the liklihood that a site was a nest site. Each percent of mature forest corresponded to a 3.46% (95% CI .33%-7.12%) increase in the odds of a site being a nest site.**
 
 
 
