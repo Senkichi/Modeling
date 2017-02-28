@@ -187,8 +187,13 @@ Even though the text indicates that either physical measurements or survival can
 
 ```{r,eval=T}
 sparrow<-ex2016
-sparrow.model<- glm(Status~., family=binomial, data=sparrow)
-summary(sparrow.model)
+sparrow2 <- sparrow[,-2]
+  sparrow2$Status <- as.numeric(sparrow$Status)
+    sparrow2$Status <- (sparrow2$Status -1)
+sparrow.model<- glm(Status~., family=binomial, data=sparrow2)
+biggest <- formula(glm(Status ~ .,data = sparrow2))
+sparrow.step <- step(sparrow.model, scope = biggest, direction = "back")
+  summary(sparrow.model)
 Sparrow.model2<- glm(Status~TL, family=binomial, data=sparrow)
 summary(Sparrow.model2)
 ```
