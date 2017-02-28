@@ -181,7 +181,7 @@ Even though the text indicates that either physical measurements or survival can
 
 (b) Why would it be ill-advised to include **all** of the body size measurements in your model? There is a statistical reason for this which we discussed in BL652. (+3)
 
-**It would be ill-advised to include all of the body size measurements because the more variables you include creates additional degrees of freedom. The strongly correlated variables decrease in impact with the addition of more variables.**
+**It would be ill-advised to include all of the body size measurements because the more variables you include uses up degrees of freedom. If the other body size measurements are added it would distort the relationship between total body length and survival within the model. More paremeters in this case lead to a model with a lack of fit (higher amount of deviance).**
 
 (c) By some method of your choice, choose ONE of the body size measurements to include as a predictor in your model of survival. Explain how you chose which variable to include. (+3) 
 
