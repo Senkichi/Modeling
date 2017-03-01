@@ -137,7 +137,7 @@ owl7<-cbind(site.dummy,owl3)
 percent.model<-glm(owl.site~forest,family = binomial,data=owl6)
 summary(percent.model)
 confint(percent.model)
-plot(site.dummy~RM,pch=19,xlab="Tree Forest Area", ylab="Random or Nest Site",main="Forest Area in Random vs. Nest Areas")
+plot(site.dummy~forest,pch=19,xlab="Tree Forest Area", ylab="Random or Nest Site",main="Forest Area in Random vs. Nest Areas")
 x.owl<-seq(from=0, to=1,by=0.01)
 logits.owl<- -6.236+9.350*x.owl
 y.owl<-exp(logits.owl)/(1+exp(logits.owl))
