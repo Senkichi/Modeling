@@ -181,7 +181,7 @@ Even though the text indicates that either physical measurements or survival can
 
 (b) Why would it be ill-advised to include **all** of the body size measurements in your model? There is a statistical reason for this which we discussed in BL652. (+3)
 
-**It would be ill-advised to include all of the body size measurements because the more variables you include uses up degrees of freedom. If the other body size measurements are added it would distort the relationship between total body length and survival within the model. More paremeters in this case lead to a model with a lack of fit (higher amount of deviance).**
+**It would be ill-advised to include all of the body size measurements because while inclusion of additional variables will help explain a greater amount of the noise, some variables may contribute such an insignificant explanation that their inclusion is essentially meaningless. It also makes it much more difficult to do simple analysis and create graphical representation of your findings.**
 
 (c) By some method of your choice, choose ONE of the body size measurements to include as a predictor in your model of survival. Explain how you chose which variable to include. (+3) 
 
@@ -193,12 +193,15 @@ sparrow.model<- glm(Status~., family=binomial, data=sparrow)
 drop1(sparrow.model, test = "F")  
 sparrow.model2 <- glm(Status ~ TL + AG, data = sparrow)
 summary(sparrow.model2)
+sparrow.model3 <- glm(Status ~ TL + AG + AG*TL, data = sparrow)
+summary(sparrow.model3)
+exp(-0.06774)
 ```
 **The TL variable was chosen by analyzing a full generalized linear regression model with the drop1 F test analysis, which revealed that the greatest non-AG deviance in excluding a variable from the full model was that of TL exclusion, with a significant (p-value = 7.873e-07) deviance value of 90.937 from the full model.**
 
 (d) Construct a logistic regression model that assesses how the body size measurement you chose in (c) influences probability of survival. If appropriate, your model should allow the effect of body size to change for juveniles and adults. Construct a figure to show your model and write results text that explains what your modeling efforts indicate about the effect of body size on survival in juvenile and adult sparrows (+15).
 
-**For our logistic regression model we assessed how Total Length influenced survival in the Bumpus natural selection experiment. From the logistic regression model it was determined that every one mm increase in total length corresponed to a 0.34 decrease in the odds ratio (Z value= -3.719, p-value = 0.0002). The boxplot graph above describes the relationship with Total Length on the Y axis and binomial variables of Perished and Survived on the x axis with error bars added. The other binomial variable of juvenile and adult was found to have no significant relationship to the independent variable of Total Length.**
+**For our logistic regression model we assessed how Total Length influenced survival in the Bumpus natural selection experiment. From the logistic regression model it was determined that every one mm increase in total length corresponed to a 0.9345034 decrease in the odds ratio (p-value = 2.59e-05) of adult sparrow survival. The categorical variable of age was found to have a statistically insignificant (p-value = 0.891) on the log of the odds ratio for sparrow survival. Inclusion of an interaction term of the effects of total length upon age to a third model showed that the interaction between the terms was also insignificant (p-value = 0.337280) in explaining the log odds ratio of sparrow survival. The boxplot graph above describes the relationship with Total Length on the Y axis and binomial variables of Perished and Survived on the x axis with error bars added. As the age was an insignificant variable, it was not included in graphical representation.**
 
 ```{r,eval=T}
 plot(Status ~ TL, data=sparrow, xlab="Total Length", main="Total Length in Perished and Survived Sparrows")
@@ -209,5 +212,15 @@ lines(x.sparrow,y.sparrow)
 ```
 
 (e) Should any other body size variables be added to your model in (d)? If so, which and why? If not, why? Please argue coherently with statistical support. (+5) 
-**By running a generallinear model assessing how all physical characteristics are related to the binomial variable of Status it was determined that weight (WT) should also be included in the model (z value= -2.529, Pr(>|z|) = 0.011437). Besides WT and TL no other variables should be included in the logistic regression model.**
+
+```{r}
+big.sparrow <- formula(glm(Status ~ ., data = sparrow))
+sparrow.start <- glm(Status ~ 1, data = sparrow, family = "binomial")
+sparrow.scope <- list(lower = formula(sparrow.start), upper = big.sparrow)
+small.sparrow <- glm(Status ~ TL, data = sparrow, family = "binomial")
+sparrow.step <-step(small.sparrow, scope = sparrow.scope, direction = "both")
+
+summary(sparrow.step)
+```
+**HL, WT, and KL should be added to the model. Stepwise analysis of all possible sparrow models (excluding interaction terms) was conducted using bidirectional stepwise comparison. The model possessing the lowest AIC included the variables for total length, length of humerus, weight, and length of keel to sternum. All were found to be statistically significant explanators (p-values < 0.05) of the log odds ratio of sparrow survival. Explanators, mount up!**
  

@@ -27,14 +27,20 @@ library(ggplot2)
 library(dplyr)
 library(lme4)
 library(nlme)
-euse <- read.csv("TBL4 Exercise Data.csv")
+euse <- read.csv("TBL4 Exercise Data.csv", header=T,na.strings=c("NC","NM"))
 colnames(euse) <- c("station", "city", "MANUII", "PerEmbed", "EPT")
-euse$factor <- factor(euse$city)
+euse$fcity <- factor(euse$city)
 ```
 
 (a) Write out a coherent hypothesis and rationale for how you expect percent embeddedness to change as urbanization increases. (+5)
 
 (b) Construct a completely fixed-effects model where you model the effect of urbanization on the percent embeddedness and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on percent embeddedness varies by city, (b) the estimated percent embeddedness in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
+
+```{r}
+
+model1<-lm(PerEmbed~MANUII+city+MANUII:city,data=euse)
+summary(model1)
+```
 
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
 
