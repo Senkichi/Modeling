@@ -161,7 +161,7 @@ psuedo.rsq
 ```{r,eval=T}
 exp(-1.98029)/(1+exp(0.03401*0.3 ))
 ```
-**The probability that a site with 30% mature forest is a nesting site rather than a random site is 6.87.**
+**The probability that a site with 30% mature forest is a nesting site rather than a random site is 6.87%.**
 
 (h) Using your model, by what factor does the odds of a site being a nest site change (state which: increase or decrease) for a 10% increase in mature forest around the site. (+5)  
 
@@ -187,32 +187,25 @@ Even though the text indicates that either physical measurements or survival can
 
 ```{r,eval=T}
 sparrow<-ex2016
-sparrow2 <- sparrow[,-2]
-  sparrow2$Status <- as.numeric(sparrow$Status)
-    sparrow2$Status <- (sparrow2$Status -1)
-sparrow.model<- glm(Status~., family=binomial, data=sparrow2)
-biggest <- formula(glm(Status ~ .,data = sparrow2))
-sparrow.step <- step(sparrow.model, scope = biggest, direction = "back")
-  summary(sparrow.model)
-Sparrow.modelTL<- glm(Status~TL, family=binomial, data=sparrow)
-summary(Sparrow.modelTL)
-Sparrow.modelKL<- glm(Status~KL, family=binomial, data=sparrow)
-summary(Sparrow.modelKL)
-Sparrow.modelWT<- glm(Status~WT, family=binomial, data=sparrow)
-summary(Sparrow.modelWT)
-Sparrow.modelHL<- glm(Status~HL, family=binomial, data=sparrow)
-summary(Sparrow.modelHL)
-anova(Sparrow.modelHL,Sparrow.modelWT,Sparrow.modelKL,Sparrow.modelTL)
+sparrow$Status <- as.numeric(sparrow$Status)
+    sparrow$Status <- (sparrow$Status -1)
+sparrow.model<- glm(Status~., family=binomial, data=sparrow)
+drop1(sparrow.model, test = "F")  
+sparrow.model2 <- glm(Status ~ TL + AG, data = sparrow)
+summary(sparrow.model2)
 ```
-
-**In order to choose what variable is selected for the model, first a rich model is fit using all variables. Then using backwards elimination, the model with the lowest AIC is selected. This model includes the different body size measurements like TL, KL, WT, and HL. In order to determine one body size measurement that best predicts survival in the model individual models were run using and then an anova was performed to determine which specific body size measurement is the best predictor or survival. The model with the lowest Residual Deviance is the model that best predicts, therefore TL is the best predictor of Status.**
+**The TL variable was chosen by analyzing a full generalized linear regression model with the drop1 F test analysis, which revealed that the greatest non-AG deviance in excluding a variable from the full model was that of TL exclusion, with a significant (p-value = 7.873e-07) deviance value of 90.937 from the full model.**
 
 (d) Construct a logistic regression model that assesses how the body size measurement you chose in (c) influences probability of survival. If appropriate, your model should allow the effect of body size to change for juveniles and adults. Construct a figure to show your model and write results text that explains what your modeling efforts indicate about the effect of body size on survival in juvenile and adult sparrows (+15).
 
-**For our logistic regression model we assessed how Total Length influenced survival in the Bumpus natural selection experiment. From the logistic regression model it was determined that every one mm increase in total length corresponed to a -.34 decrease in the logit status ( Z value= -3.719, p-value = 0.0002). The boxplot graph above describes the relationship with Total Length on the Y axis and binomial variables of Perished and Survived on the x axis with error bars added. The other binomial variable of juvenile and adult was found to have no significant relationship to the independent variable of Total Length.**
+**For our logistic regression model we assessed how Total Length influenced survival in the Bumpus natural selection experiment. From the logistic regression model it was determined that every one mm increase in total length corresponed to a 0.34 decrease in the odds ratio (Z value= -3.719, p-value = 0.0002). The boxplot graph above describes the relationship with Total Length on the Y axis and binomial variables of Perished and Survived on the x axis with error bars added. The other binomial variable of juvenile and adult was found to have no significant relationship to the independent variable of Total Length.**
 
 ```{r,eval=T}
-plot(Status~TL, data=sparrow, xlab="Total Length", main="Total Length in Perished and Survived Sparrows")
+plot(Status ~ TL, data=sparrow, xlab="Total Length", main="Total Length in Perished and Survived Sparrows")
+x.sparrow<-seq(from=0, to=167,by=1)
+logits.sparrow<- 11.44898 - 0.06774*x.sparrow
+y.sparrow<-exp(logits.sparrow)/(1+exp(logits.sparrow))
+lines(x.sparrow,y.sparrow)
 ```
 
 (e) Should any other body size variables be added to your model in (d)? If so, which and why? If not, why? Please argue coherently with statistical support. (+5) 
