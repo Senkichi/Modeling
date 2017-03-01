@@ -1,13 +1,13 @@
 ---
 title: "Binary Logistic Regression & Meta-Analysis Prep: TBL 2"
 author: "Sam, Panmei, Jeffrey, Matt, Alex"
-date: "February 13, 2017"
+date: "March 1, 2017"
 output: pdf_document
 ---
 
 ## 1. Meta-Analysis Background Research (+20, +10 for each question)
 ```{r,eval=T}
-
+setwd("~/Documents/Spring 2017/Modeling")
 library(Sleuth2)
 ```
 
