@@ -205,8 +205,8 @@ exp(-0.06774)
 
 ```{r,eval=T}
 plot(Status ~ TL, data=sparrow, xlab="Total Length", main="Total Length in Perished and Survived Sparrows")
-x.sparrow<-seq(from=0, to=167,by=1)
-logits.sparrow<- 11.44898 - 0.06774*x.sparrow
+x.sparrow<-seq(from=0, to=170,by=1)
+logits.sparrow<- 54.49312 - 0.33698*x.sparrow
 y.sparrow<-exp(logits.sparrow)/(1+exp(logits.sparrow))
 lines(x.sparrow,y.sparrow)
 ```
