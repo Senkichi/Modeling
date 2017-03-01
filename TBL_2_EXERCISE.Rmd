@@ -169,7 +169,7 @@ exp(-1.98029)/(1+exp(0.03401*0.3 ))
 exp(-1.98029)/(1+exp(0.03401*0.1)) 
 ```
 
-**The odds of a site being a nest site are increased by 2.547 after a 10% increase in mature forest.**
+**The odds of a site being a nest site are increased by 0.069 after a 10% increase in mature forest.**
 
 ## 3. Binary Logistic Regression, Ch. 20 Data Problem 16 (+30)
 
