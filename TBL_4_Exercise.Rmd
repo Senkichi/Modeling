@@ -29,6 +29,7 @@ setwd("~/Documents/Spring 2017/Modeling")
 ept<-read.csv(file="TBL4 Exercise Data.csv",header=T,na.strings=c("NC","NM"))
 library(nlme)
 library(lme4)
+library(ggplot2)
 ```
 
 (a) Write out a coherent hypothesis and rationale for how you expect percent embeddedness to change as urbanization increases. (+5)
@@ -135,6 +136,14 @@ summary(mixed2)
 
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
 
+```{r,eval=T}
+qplot(MANUII, PerEmbed, data=ept.2, group=fMetro, color=fMetro, geom="smooth",
+      method="lm", xlab=" Urbanization", ylab=" Percent Embeddedness", 
+      main="Effect of Urbanization on Percent Embeddedness")
+#this still needs to be referenced, also not sure if correct
+```
+
+
 ## 3. Generalized Linear Mixed-Effects Model: Non-Normal Response (+45)
 
 I have uploaded data from the EUSE study to D2L. Recall that the EUSE study investigated the effect of urbanization on stream ecosystems in nine different cities. Of particular interest to the investigators is how number of EPT taxa behaves as urbanization increases, what the number of EPT taxa is in absence of urbanization, and whether the relationship varies by city and how much. 
@@ -199,3 +208,11 @@ summary(complete.3)
 * After accounting for the effect of urbanization do sites within cities vary more in number of EPT taxa or do cities vary more in the mean number of EPT taxa. Report values that argue for your conclusion.
 
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
+
+```{r,eval=T}
+qplot(MANUII, EPT, data=ept.2, group=fMetro, color=fMetro, geom="smooth",
+      method="lm", xlab="Urbanization", ylab="Number of EPT Taxa", 
+      main="Effect of Urbanization on Number of EPT Taxa") 
+#this still needs to be referenced, also not sure if correct
+```
+
