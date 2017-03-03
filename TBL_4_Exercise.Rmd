@@ -67,7 +67,7 @@ summary(model.glht2)
 
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
 
-**You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the percent embeddedness, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to and increase percent of embeddedness in comparison to other cities.**
+**You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the percent embeddedness, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to an increase in percent of embeddedness in comparison to other cities.**
 
 (d) Fit the following three models and test which is best using the ```anova()``` function in R: (+5)
 
@@ -143,15 +143,50 @@ I have uploaded data from the EUSE study to D2L. Recall that the EUSE study inve
 
 **We hypothesize that the number of EPT taxa will decrease as a result of increasing urbanization. The reduction in EPT taxa could be due to signs of urbanization like the loss of habitat or increased pollutants in the water. The more urbanized a city the less EPT taxa will be present.**
 
-(b) Construct a completely fixed-effects model where you model the effect of urbanization on the number of EPT taxa of the median grain size and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on EPT taxa varies by city, (b) the estimated number of EPT taxa in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
+(b) Construct a completely fixed-effects model where you model the effect of urbanization on the number of EPT taxa of the percent embeddedness and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on EPT taxa varies by city, (b) the estimated number of EPT taxa in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
+
+```{r,eval=T}
+#3b
+ept.2$fMetro<-factor(ept.2$Metropolitan.Area.Short.Code)
+model1.3<-glm(EPT~MANUII+fMetro+MANUII:fMetro,data=ept.2,family=poisson)
+summary(model1.3)
+
+#3b-b
+library(multcomp)
+K1.3<-c(1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0)
+K.all.3<-rbind(K1.3)
+model.glht.3<-glht(model1.3,linfct=K.all.3)
+confint(model.glht.3) #1.84 in Denver streams that have no urbanization (95% CI 1.61 to 2.08)
+summary(model.glht.3)
+# this assesses the p value and tells you there is a significant difference p<alpha
+
+#3b-c
+K2.3<-c(0,0,0,0,0,0,0,0,0,0,0,1,-1,0,0,0,0,0)
+K.all2.3<-rbind(K2.3)
+model.glht2.3<-glht(model1.3,linfct=K.all2.3)
+confint(model.glht2.3) #-0.02106 difference between slopes of BIR and MGB (95% CI -0.02796 to -0.01416)
+summary(model.glht2.3)
+# this assess the p value and tells you there is a significant difference p<alpha
+```
+
+**In the fixed-effects model to determine the effect of urbanization on the number of EPT taxa and how that effect varies by city, this model is significant (p-value < 2.2e-16) which suggests that the effect of urbanization on percent embeddedness does significantly vary by city. The estimated number of EPT taxa in Denver streams that have no urbanization is 1.84 (95% CI 1.61 to 2.08). The most responsive and least responsive cities with respect to each other were identified as Boston (BOS) and Denver (DEN). The estimated difference between the slopes of these cities is -0.02106 (95% CI -0.02796 to -0.01416).**
 
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
+
+**You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the number of EPT taxa, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to a decrease in number of EPT taxa in comparison to other cities because levels of urbanization and pollution differ.**
 
 (d) Fit the following three models and test which is best using the ```anova()``` function in R: (+5)
 
 * A complete-pooling model where all cities are pooled and there are only two fixed effects: one for the intercept and one for the slope. City is not included in the model.
 
+```{r,eval=T}
+complete.3<-gls(EPT~MANUII, data=ept.2)
+summary(complete.3)
+```
+
 * A mixed-effects model where the slope of urbanization on number of EPT taxa remains constant across cities, but the intercept is allowed to vary randomly by city.
+
+
 
 * A mixed-effects model where both the slope and intercept are allowed to vary randomly by city.
 
