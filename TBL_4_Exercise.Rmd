@@ -63,6 +63,8 @@ summary(model.glht2)
 # this assess the p value and tells you there is a significant difference p<alpha
 ```
 
+**In the fixed-effects model to determine the effect of urbanization on the percent embeddedness and how that effect varies by city, this model is significant (p-value < 2.2e-16) which suggests that the effect of urbanization on percent embeddedness does significantly vary by city. The estimated percent embeddedness in Denver streams that have no urbanization is 70.95% (95% CI 60.34% to 81.55%). The most responsive and least responsive cities with respect to each other were identified as Birmingham (BIR) and Milwaukee-Green Bay (MGB). The estimated difference between the slopes of these cities is 0.5213 (95% CI 0.1602 to 0.8825).**
+
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
 
 **You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the percent embeddedness, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to and increase percent of embeddedness in comparison to other cities.**
@@ -92,7 +94,14 @@ summary(mixed2)
 anova(complete,mixed,mixed2)
 ```
 
+**Of the three models tested the second model, a mixed-effects model where the slope of urbanization on percent embeddedness remains constant across cities but the intercept is allowed to vary randomly by city, is the best model (p-value <0.0001).**
+
 (e) Using the model you selected in (d), it is of interest to know the following:
+
+```{r,eval=T}
+mixed<-lme(PerEmbed~MANUII,random=~1|fMetro,data=ept.2)
+summary(mixed)
+```
 
 * What is the average percent embeddedness in the absence of urbanization across all cities and how much variation exists across cities in this estimate. Report a 95% confidence interval to express the variation around the global value. 
 
