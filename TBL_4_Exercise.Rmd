@@ -77,6 +77,7 @@ summary(model.glht2)
 ept.2<-ept[!is.na(ept$PerEmbed),]
 complete<-gls(PerEmbed~MANUII, data=ept.2) #complete pooling
 summary(complete)
+confint(complete)
 ```
 
 * A mixed-effects model where the slope of urbanization on percent embeddedness remains constant across cities, but the intercept is allowed to vary randomly by city.
@@ -92,22 +93,45 @@ summary(mixed)
 mixed2<-lme(PerEmbed~1+MANUII,random=~1+MANUII|fMetro,data=ept.2)
 summary(mixed2)
 anova(complete,mixed,mixed2)
+anova(complete,mixed2)
 ```
 
-**Of the three models tested the second model, a mixed-effects model where the slope of urbanization on percent embeddedness remains constant across cities but the intercept is allowed to vary randomly by city, is the best model (p-value <0.0001).**
+**Of the three models tested the third model, a mixed-effects model where the slope  and intercept are allowed to vary randomly by city, is the best model because it has the lowest AIC value of 2281.176. Although this model is not statistically significant from the second model produced, when a comparison between the fixed effect model and this model (the third model) are run, a significant p-value of <0.0001 further supports this selection.**
 
 (e) Using the model you selected in (d), it is of interest to know the following:
 
 ```{r,eval=T}
-mixed<-lme(PerEmbed~MANUII,random=~1|fMetro,data=ept.2)
-summary(mixed)
+mixed2<-lme(PerEmbed~1+MANUII,random=~1+MANUII|fMetro,data=ept.2)
+summary(mixed2)
 ```
 
 * What is the average percent embeddedness in the absence of urbanization across all cities and how much variation exists across cities in this estimate. Report a 95% confidence interval to express the variation around the global value. 
 
-* What is the average effect of urbanization on percent embeddedness across cities and how much variation exists among cities in the effect of urbanization on log median grain size. Report a 95% confidence interval to express the variation around the global value. 
+```{r,eval=T}
+summary(mixed2)
+57.7836+1.96*(24.3906261/sqrt(258))
+57.7836-1.96*(24.3906261/sqrt(258))
+```
+
+**The average percent embeddedness in the absence of urbanization across all cities is 57.78 (95% CI 54.81% to 60.76%). There is a 24.39% variation among cities.**
+
+* What is the average effect of urbanization on percent embeddedness across cities and how much variation exists among cities in the effect of urbanization on percent embeddedness. Report a 95% confidence interval to express the variation around the global value. 
+
+```{r,eval=T}
+summary(mixed2)
+0.10975+1.96*(0.1364928/sqrt(258))
+0.10975-1.96*(0.1364928/sqrt(258))
+```
+
+**The average effect of urbanization on percent embeddedness across cities is 0.11 (95% CI 0.09 to 0.13). There is a 0.14 variation existing among cities.**
 
 * After accounting for the effect of urbanization, do sites within cities vary more in percent embeddedness or do cities vary more in average percent embeddednes. Report values that argue for your conclusion.
+
+```{r,eval=T}
+summary(mixed2)
+```
+
+**After accounting for the effect for urbanization, sites vary in percent embeddedness by 24.39% while cities vary in average percent embeddedness by 18.32%.**
 
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
 
@@ -116,6 +140,8 @@ Answer all of the above in a coherent narrative that references a figure which c
 I have uploaded data from the EUSE study to D2L. Recall that the EUSE study investigated the effect of urbanization on stream ecosystems in nine different cities. Of particular interest to the investigators is how number of EPT taxa behaves as urbanization increases, what the number of EPT taxa is in absence of urbanization, and whether the relationship varies by city and how much. 
 
 (a) Write out a coherent hypothesis and rationale for how you expect number of EPT taxa to change as urbanization increases. (+5)
+
+**We hypothesize that the number of EPT taxa will decrease as a result of increasing urbanization. The reduction in EPT taxa could be due to signs of urbanization like the loss of habitat or increased pollutants in the water. The more urbanized a city the less EPT taxa will be present.**
 
 (b) Construct a completely fixed-effects model where you model the effect of urbanization on the number of EPT taxa of the median grain size and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on EPT taxa varies by city, (b) the estimated number of EPT taxa in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
 
