@@ -110,39 +110,33 @@ summary(mixed2)
 
 ```{r,eval=T}
 summary(mixed2)
-57.7836+1.96*(24.3906261/sqrt(258))
-57.7836-1.96*(24.3906261/sqrt(258))
+57.7836+1.96*(24.3906261)
+57.7836-1.96*(24.3906261)
 ```
-
-**The average percent embeddedness in the absence of urbanization across all cities is 57.78 (95% CI 54.81% to 60.76%). There is a 24.39% variation among cities.**
 
 * What is the average effect of urbanization on percent embeddedness across cities and how much variation exists among cities in the effect of urbanization on percent embeddedness. Report a 95% confidence interval to express the variation around the global value. 
 
 ```{r,eval=T}
 summary(mixed2)
-0.10975+1.96*(0.1364928/sqrt(258))
-0.10975-1.96*(0.1364928/sqrt(258))
+0.10975+1.96*(0.1364928)
+0.10975-1.96*(0.1364928)
 ```
 
-**The average effect of urbanization on percent embeddedness across cities is 0.11 (95% CI 0.09 to 0.13). There is a 0.14 variation existing among cities.**
-
-* After accounting for the effect of urbanization, do sites within cities vary more in percent embeddedness or do cities vary more in average percent embeddednes. Report values that argue for your conclusion.
+* After accounting for the effect of urbanization, do sites within cities vary more in percent embeddedness or do cities vary more in average percent embeddedness. Report values that argue for your conclusion.
 
 ```{r,eval=T}
 summary(mixed2)
 ```
 
-**After accounting for the effect for urbanization, sites vary in percent embeddedness by 24.39% while cities vary in average percent embeddedness by 18.32%.**
-
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
 
 ```{r,eval=T}
-qplot(MANUII, PerEmbed, data=ept.2, group=fMetro, color=fMetro, geom="smooth",
-      method="lm", xlab=" Urbanization", ylab=" Percent Embeddedness", 
-      main="Effect of Urbanization on Percent Embeddedness")
-#this still needs to be referenced, also not sure if correct
+qplot(MANUII,PerEmbed,data=ept.2,group=fMetro,color=fMetro,geom="smooth",
+      method="lm",xlab="Urbanization",ylab="Percent Embeddedness", 
+      main="Figure 1: Effect of Urbanization on Percent Embeddedness",se=F)
 ```
 
+**The average percent embeddedness in the absence of urbanization across all cities is 57.78% (95% CI 9.98% to 105.59%). There is a 24.39% variation among cities. The average effect of urbanization on percent embeddedness across cities is 0.11 (95% CI -0.16 to 0.38). There is a 0.14 variation existing among cities. After accounting for the effect for urbanization, sites vary in percent embeddedness more with 24.39% while cities vary in average percent embeddedness by 18.32%. Figure one shows how each city has different intercepts (percent embeddedness) and slopes (the effect of urbanization on percent embeddedness) and why it is important to incorporate the random effects.**
 
 ## 3. Generalized Linear Mixed-Effects Model: Non-Normal Response (+45)
 
@@ -189,43 +183,62 @@ summary(model.glht2.3)
 * A complete-pooling model where all cities are pooled and there are only two fixed effects: one for the intercept and one for the slope. City is not included in the model.
 
 ```{r,eval=T}
-complete.3<-gls(EPT~MANUII, data=ept.2)
+logMANUII.1<-log(ept.2$MANUII+1)
+ept.3<-cbind(ept.2,logMANUII.1)
+complete.3<-glm(EPT~logMANUII.1, data=ept.3,family=poisson)
 summary(complete.3)
 ```
 
 * A mixed-effects model where the slope of urbanization on number of EPT taxa remains constant across cities, but the intercept is allowed to vary randomly by city.
 
 ```{r,eval=T}
-mixed.3<-glmer(EPT~MANUII+(1|fMetro),data=ept.2,family=poisson)
+mixed.3<-glmer(EPT~logMANUII.1+(1|fMetro),data=ept.2,family=poisson)
 summary(mixed.3)
-#something like this should work but I cannot debug
 ```
 
 * A mixed-effects model where both the slope and intercept are allowed to vary randomly by city.
 
 ```{r,eval=T}
-mixed2.3<-glmer(EPT~MANUII+(1+MANUII|fMetro),data=ept.2,family=poisson)
+mixed2.3<-glmer(EPT~logMANUII.1+(1+logMANUII.1|fMetro),data=ept.2,family=poisson)
 summary(mixed2.3)
-#something like this should work but I cannot debug
 
-anova(complete.3,mixed.3,mixed2.3)
-anova(complete.3,mixed2.3)
+anova(complete.3,mixed.3,test="Chi")
+anova(complete.3,mixed2.3,test="Chi")
+anova(mixed.3,mixed2.3)
 ```
+
+**Of the three models tested the third model, a mixed-effects model where the slope  and intercept are allowed to vary randomly by city, is the best model because it has the lowest AIC value of 1366.4 and a significant p-value of 6.573e-08 which further supports this selection.**
 
 (e) Using the model you selected in (d), it is of interest to know the following:
 
 * What is the average number of EPT in the absence of urbanization across all cities and how much variation exists across cities in this estimate. Report a 95% confidence interval to express the variation around the global estimate. 
 
+```{r,eval=T}
+summary(mixed2.3)
+2.71268+(1.96*0.5140)
+2.71268-(1.96*0.5140)
+```
+
 * What is the average effect of urbanization on number of EPT taxa across all cities and how much variation exists among cities in the effect of urbanization on number of EPT taxa. Report a 95% confidence interval to express the variation around the global estimate. 
 
+```{r,eval=T}
+summary(mixed2.3)
+-0.26431+(1.96*0.1167)
+-0.26431-(1.96*0.1167)
+```
+
 * After accounting for the effect of urbanization do sites within cities vary more in number of EPT taxa or do cities vary more in the mean number of EPT taxa. Report values that argue for your conclusion.
+
+```{r,eval=T}
+summary(mixed2.3)
+```
 
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
 
 ```{r,eval=T}
-qplot(MANUII, EPT, data=ept.2, group=fMetro, color=fMetro, geom="smooth",
-      method="lm", xlab="Urbanization", ylab="Number of EPT Taxa", 
-      main="Effect of Urbanization on Number of EPT Taxa") 
-#this still needs to be referenced, also not sure if correct
+qplot(MANUII,EPT,data=ept.2,group=fMetro,color=fMetro,geom="smooth",
+      method="lm",xlab="Urbanization",ylab="Number of EPT Taxa", 
+      main="Figure 2: Effect of Urbanization on Number of EPT Taxa",se=F) 
 ```
 
+**The average number of EPT in the absence of urbanization across all cities is 2.71. (95% CI 1.71 to 3.72). The variation that exists is 0.5140. The average effect of urbanization on number of EPT taxa across all cities is -0.25 (95% CI -0.04 to -0.49). The variation that exists is 0.01. After accounting for the effect for urbanization, sites vary in percent embeddedness more with 0.26 while cities vary in average percent embeddedness by 0.01. Figure two shows how each city has different intercepts (number of EPT taxa) and slopes (the effect of urbanization on number of EPT taxa) and why it is important to incorporate the random effects.** 
