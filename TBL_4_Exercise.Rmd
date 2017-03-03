@@ -195,9 +195,22 @@ summary(complete.3)
 
 * A mixed-effects model where the slope of urbanization on number of EPT taxa remains constant across cities, but the intercept is allowed to vary randomly by city.
 
-
+```{r,eval=T}
+mixed.3<-glmer(EPT~MANUII+(1|fMetro),data=ept.2,family=poisson)
+summary(mixed.3)
+#something like this should work but I cannot debug
+```
 
 * A mixed-effects model where both the slope and intercept are allowed to vary randomly by city.
+
+```{r,eval=T}
+mixed2.3<-glmer(EPT~MANUII+(1+MANUII|fMetro),data=ept.2,family=poisson)
+summary(mixed2.3)
+#something like this should work but I cannot debug
+
+anova(complete.3,mixed.3,mixed2.3)
+anova(complete.3,mixed2.3)
+```
 
 (e) Using the model you selected in (d), it is of interest to know the following:
 
