@@ -1,7 +1,7 @@
 ---
 title: "Mixed-Effects Models and Meta-Analysis Preparation: TBL4"
-author: 
-date: "February 21, 2017"
+author: "Alex, Sam, Panmei, Jeffrey, Matt"
+date: "March 3, 2017"
 output: pdf_document
 ---
 
@@ -17,75 +17,228 @@ In class this week, we discussed that your next step would be to do the followin
 
 Please report your progress on these tasks this week. for this question.
 
+**The papers have been compiled into one google doc file with no replicates and divided amongst students. There are about 55 papers per person to sort through.**
+
 
 ## 2. Linear Mixed-Effects Model: Normal Response (+45)
 
 I have uploaded data from the EUSE study to D2L. Recall that the EUSE study investigated the effect of urbanization on stream ecosystems in nine different cities. Of particular interest to the investigators is how percent embeddedness behaves as urbanization increases, what the percent embeddedness is in absence of urbanization, and whether the relationship varies by city and how much. For reference, percent embededdness is the proportion of cobble-sized rocks (generally good aquatic habitat) buried in fine sediments (generally poor aquatic habitat).
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-library(lme4)
+setwd("~/Documents/Spring 2017/Modeling")
+ept<-read.csv(file="TBL4 Exercise Data.csv",header=T,na.strings=c("NC","NM"))
 library(nlme)
-euse <- read.csv("TBL4 Exercise Data.csv", header=T,na.strings=c("NC","NM"))
-colnames(euse) <- c("station", "city", "MANUII", "PerEmbed", "EPT")
-euse$fcity <- factor(euse$city)
+library(lme4)
+library(ggplot2)
 ```
 
 (a) Write out a coherent hypothesis and rationale for how you expect percent embeddedness to change as urbanization increases. (+5)
 
+**If percent embeddedness is the proportion of cobble-sized rocks burried in fine sediment, we hypothesize that as urbanization increases percent embeddedness would increase as well because the influx of pollutants from surrounding areas. Urbanization can introduce fine sediments into the stream that fill up the areas between cobble-sized rocks and eliminate habitat for aquatic macroinvertebrates and other species.**
+
 (b) Construct a completely fixed-effects model where you model the effect of urbanization on the percent embeddedness and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on percent embeddedness varies by city, (b) the estimated percent embeddedness in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
 
 ```{r}
-
-model1<-lm(PerEmbed~MANUII+city+MANUII:city,data=euse)
+ept$fMetro<-factor(ept$Metropolitan.Area.Short.Code)
+model1<-lm(PerEmbed~MANUII+fMetro+MANUII:fMetro,data=ept)
 summary(model1)
+#the p value is < 2.2e-16 and means that the effect of urbanization on percent embeddedness 
+  #significantly varies by city
+
+#2b-b
+library(multcomp)
+K1<-c(1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0)
+K.all<-rbind(K1)
+model.glht<-glht(model1,linfct=K.all)
+confint(model.glht) 
+#70.95% in Denver streams that have no urbanization (95% CI 60.34 to 81.55)
+summary(model.glht)
+# this assesses the p value and tells you there is a significant difference p<alpha
+
+#2b-c
+K2<-c(0,0,0,0,0,0,0,0,0,0,1,0,0,0,-1,0,0,0) #BIR-most responsive and MGB-least responsive
+K.all2<-rbind(K2)
+model.glht2<-glht(model1,linfct=K.all2)
+confint(model.glht2) #0.5213 difference between slopes of BIR and MGB (95% CI 0.1602 to 0.8825)
+summary(model.glht2)
+# this assess the p value and tells you there is a significant difference p<alpha
 ```
 
+**In the fixed-effects model to determine the effect of urbanization on the percent embeddedness and how that effect varies by city, this model is significant (p-value < 2.2e-16) which suggests that the effect of urbanization on percent embeddedness does significantly vary by city. The estimated percent embeddedness in Denver streams that have no urbanization is 70.95% (95% CI 60.34% to 81.55%). The most responsive and least responsive cities with respect to each other were identified as Birmingham (BIR) and Milwaukee-Green Bay (MGB). The estimated difference between the slopes of these cities is 0.5213 (95% CI 0.1602 to 0.8825).**
+
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
+
+**You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the percent embeddedness, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to an increase in percent of embeddedness in comparison to other cities.**
 
 (d) Fit the following three models and test which is best using the ```anova()``` function in R: (+5)
 
 * A complete-pooling model where all cities are pooled and there are only two fixed effects: one for the intercept and one for the slope. City is not included in the model.
 
+```{r,eval=T}
+ept.2<-ept[!is.na(ept$PerEmbed),]
+complete<-gls(PerEmbed~MANUII, data=ept.2) #complete pooling
+summary(complete)
+confint(complete)
+```
+
 * A mixed-effects model where the slope of urbanization on percent embeddedness remains constant across cities, but the intercept is allowed to vary randomly by city.
+
+```{r,eval=T}
+mixed<-lme(PerEmbed~MANUII,random=~1|fMetro,data=ept.2)
+summary(mixed)
+```
 
 * A mixed-effects model where both the slope and intercept are allowed to vary randomly by city.
 
+```{r,eval=T}
+mixed2<-lme(PerEmbed~1+MANUII,random=~1+MANUII|fMetro,data=ept.2)
+summary(mixed2)
+anova(complete,mixed,mixed2)
+anova(complete,mixed2)
+```
+
+**Of the three models tested the third model, a mixed-effects model where the slope  and intercept are allowed to vary randomly by city, is the best model because it has the lowest AIC value of 2281.176. Although this model is not statistically significant from the second model produced, when a comparison between the fixed effect model and this model (the third model) are run, a significant p-value of <0.0001 further supports this selection.**
+
 (e) Using the model you selected in (d), it is of interest to know the following:
+
+```{r,eval=T}
+mixed2<-lme(PerEmbed~1+MANUII,random=~1+MANUII|fMetro,data=ept.2)
+summary(mixed2)
+```
 
 * What is the average percent embeddedness in the absence of urbanization across all cities and how much variation exists across cities in this estimate. Report a 95% confidence interval to express the variation around the global value. 
 
-* What is the average effect of urbanization on percent embeddedness across cities and how much variation exists among cities in the effect of urbanization on log median grain size. Report a 95% confidence interval to express the variation around the global value. 
+```{r,eval=T}
+summary(mixed2)
+57.7836+1.96*(24.3906261)
+57.7836-1.96*(24.3906261)
+```
 
-* After accounting for the effect of urbanization, do sites within cities vary more in percent embeddedness or do cities vary more in average percent embeddednes. Report values that argue for your conclusion.
+* What is the average effect of urbanization on percent embeddedness across cities and how much variation exists among cities in the effect of urbanization on percent embeddedness. Report a 95% confidence interval to express the variation around the global value. 
+
+```{r,eval=T}
+summary(mixed2)
+0.10975+1.96*(0.1364928)
+0.10975-1.96*(0.1364928)
+```
+
+* After accounting for the effect of urbanization, do sites within cities vary more in percent embeddedness or do cities vary more in average percent embeddedness. Report values that argue for your conclusion.
+
+```{r,eval=T}
+summary(mixed2)
+```
 
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
 
-## 2. Generalized Linear Mixed-Effects Model: Non-Normal Response (+45)
+```{r,eval=T}
+qplot(MANUII,PerEmbed,data=ept.2,group=fMetro,color=fMetro,geom="smooth",
+      method="lm",xlab="Urbanization",ylab="Percent Embeddedness", 
+      main="Figure 1: Effect of Urbanization on Percent Embeddedness",se=F)
+```
+
+**The average percent embeddedness in the absence of urbanization across all cities is 57.78% (95% CI 9.98% to 105.59%). There is a 24.39% variation among cities. The average effect of urbanization on percent embeddedness across cities is 0.11 (95% CI -0.16 to 0.38). There is a 0.14 variation existing among cities. After accounting for the effect for urbanization, sites vary in percent embeddedness more with 24.39% while cities vary in average percent embeddedness by 18.32%. Figure one shows how each city has different intercepts (percent embeddedness) and slopes (the effect of urbanization on percent embeddedness) and why it is important to incorporate the random effects.**
+
+## 3. Generalized Linear Mixed-Effects Model: Non-Normal Response (+45)
 
 I have uploaded data from the EUSE study to D2L. Recall that the EUSE study investigated the effect of urbanization on stream ecosystems in nine different cities. Of particular interest to the investigators is how number of EPT taxa behaves as urbanization increases, what the number of EPT taxa is in absence of urbanization, and whether the relationship varies by city and how much. 
 
 (a) Write out a coherent hypothesis and rationale for how you expect number of EPT taxa to change as urbanization increases. (+5)
 
-(b) Construct a completely fixed-effects model where you model the effect of urbanization on the number of EPT taxa of the median grain size and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on EPT taxa varies by city, (b) the estimated number of EPT taxa in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
+**We hypothesize that the number of EPT taxa will decrease as a result of increasing urbanization. The reduction in EPT taxa could be due to signs of urbanization like the loss of habitat or increased pollutants in the water. The more urbanized a city the less EPT taxa will be present.**
+
+(b) Construct a completely fixed-effects model where you model the effect of urbanization on the number of EPT taxa of the percent embeddedness and how that effect varies by city. Write a coherent summary of the fixed-effects only model where you report (a) a p-value that indicates whether the effect of urbanization on EPT taxa varies by city, (b) the estimated number of EPT taxa in Denver streams that have no urbanization (with 95% confidence interval), and (c) the estimated difference in slopes between the most and least responsive cities (with 95% confidence interval). HINT: You will likely need to use the ```glht()``` function for (b) and (c). (+15)
+
+```{r,eval=T}
+#3b
+ept.2$fMetro<-factor(ept.2$Metropolitan.Area.Short.Code)
+model1.3<-glm(EPT~MANUII+fMetro+MANUII:fMetro,data=ept.2,family=poisson)
+summary(model1.3)
+
+#3b-b
+library(multcomp)
+K1.3<-c(1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0)
+K.all.3<-rbind(K1.3)
+model.glht.3<-glht(model1.3,linfct=K.all.3)
+confint(model.glht.3) #1.84 in Denver streams that have no urbanization (95% CI 1.61 to 2.08)
+summary(model.glht.3)
+# this assesses the p value and tells you there is a significant difference p<alpha
+
+#3b-c
+K2.3<-c(0,0,0,0,0,0,0,0,0,0,0,1,-1,0,0,0,0,0)
+K.all2.3<-rbind(K2.3)
+model.glht2.3<-glht(model1.3,linfct=K.all2.3)
+confint(model.glht2.3) #-0.02106 difference between slopes of BIR and MGB (95% CI -0.02796 to -0.01416)
+summary(model.glht2.3)
+# this assess the p value and tells you there is a significant difference p<alpha
+```
+
+**In the fixed-effects model to determine the effect of urbanization on the number of EPT taxa and how that effect varies by city, this model is significant (p-value < 2.2e-16) which suggests that the effect of urbanization on percent embeddedness does significantly vary by city. The estimated number of EPT taxa in Denver streams that have no urbanization is 1.84 (95% CI 1.61 to 2.08). The most responsive and least responsive cities with respect to each other were identified as Boston (BOS) and Denver (DEN). The estimated difference between the slopes of these cities is -0.02106 (95% CI -0.02796 to -0.01416).**
 
 (c) Instead of a model that includes fixed-effects by city, you decide to explore whether a random effect by city is better. Why might you decide to include random effects by city as opposed to fixed effects? (+5)
+
+**You might decide to include random effect by city as opposed to fixed effects because the city itself can impact the number of EPT taxa, this would allow you to see any variation between cities. Some cities may be more urbanized which could lead to a decrease in number of EPT taxa in comparison to other cities because levels of urbanization and pollution differ.**
 
 (d) Fit the following three models and test which is best using the ```anova()``` function in R: (+5)
 
 * A complete-pooling model where all cities are pooled and there are only two fixed effects: one for the intercept and one for the slope. City is not included in the model.
 
+```{r,eval=T}
+logMANUII.1<-log(ept.2$MANUII+1)
+ept.3<-cbind(ept.2,logMANUII.1)
+complete.3<-glm(EPT~logMANUII.1, data=ept.3,family=poisson)
+summary(complete.3)
+```
+
 * A mixed-effects model where the slope of urbanization on number of EPT taxa remains constant across cities, but the intercept is allowed to vary randomly by city.
 
+```{r,eval=T}
+mixed.3<-glmer(EPT~logMANUII.1+(1|fMetro),data=ept.2,family=poisson)
+summary(mixed.3)
+```
+
 * A mixed-effects model where both the slope and intercept are allowed to vary randomly by city.
+
+```{r,eval=T}
+mixed2.3<-glmer(EPT~logMANUII.1+(1+logMANUII.1|fMetro),data=ept.2,family=poisson)
+summary(mixed2.3)
+
+anova(complete.3,mixed.3,test="Chi")
+anova(complete.3,mixed2.3,test="Chi")
+anova(mixed.3,mixed2.3)
+```
+
+**Of the three models tested the third model, a mixed-effects model where the slope  and intercept are allowed to vary randomly by city, is the best model because it has the lowest AIC value of 1366.4 and a significant p-value of 6.573e-08 which further supports this selection.**
 
 (e) Using the model you selected in (d), it is of interest to know the following:
 
 * What is the average number of EPT in the absence of urbanization across all cities and how much variation exists across cities in this estimate. Report a 95% confidence interval to express the variation around the global estimate. 
 
+```{r,eval=T}
+summary(mixed2.3)
+2.71268+(1.96*0.5140)
+2.71268-(1.96*0.5140)
+```
+
 * What is the average effect of urbanization on number of EPT taxa across all cities and how much variation exists among cities in the effect of urbanization on number of EPT taxa. Report a 95% confidence interval to express the variation around the global estimate. 
+
+```{r,eval=T}
+summary(mixed2.3)
+-0.26431+(1.96*0.1167)
+-0.26431-(1.96*0.1167)
+```
 
 * After accounting for the effect of urbanization do sites within cities vary more in number of EPT taxa or do cities vary more in the mean number of EPT taxa. Report values that argue for your conclusion.
 
+```{r,eval=T}
+summary(mixed2.3)
+```
+
 Answer all of the above in a coherent narrative that references a figure which clearly shows differences by city in the figure. 
+
+```{r,eval=T}
+qplot(MANUII,EPT,data=ept.2,group=fMetro,color=fMetro,geom="smooth",
+      method="lm",xlab="Urbanization",ylab="Number of EPT Taxa", 
+      main="Figure 2: Effect of Urbanization on Number of EPT Taxa",se=F) 
+```
+
+**The average number of EPT in the absence of urbanization across all cities is 2.71. (95% CI 1.71 to 3.72). The variation that exists is 0.5140. The average effect of urbanization on number of EPT taxa across all cities is -0.25 (95% CI -0.04 to -0.49). The variation that exists is 0.01. After accounting for the effect for urbanization, sites vary in percent embeddedness more with 0.26 while cities vary in average percent embeddedness by 0.01. Figure two shows how each city has different intercepts (number of EPT taxa) and slopes (the effect of urbanization on number of EPT taxa) and why it is important to incorporate the random effects.** 
