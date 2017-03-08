@@ -1,0 +1,141 @@
+---
+title: "TBL 5 Exercise: Simulating Population Growth"
+author: 
+date: "DUE: March 15, 2017"
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+# 1. Meta-Analysis Update (+10)
+
+Please update on the progress on your meta-analysis papers.
+
+# 2. Constant Population Growth (+10)
+
+Construct a figure similar to page 10 on this week's lecture notes using the pseudocode on pages 7 and 9. However, instead of showing the results continuously, show as discrete estimates of the population size (i.e. lines not connected). Also, do a better job than your professor and show a legend on the figure (bad professor!). 
+
+```{r}
+initial <- 15
+tmax <- 31
+hot.lamda <- 1.05
+cold.lamda <- 0.95
+tasty.lamda <- 1
+too.hot  <- numeric()
+for (i in 1:tmax) {
+ too.hot[i] = initial*hot.lamda^(i-1)
+}
+
+too.cold <- numeric()
+just.right <- numeric()
+for (i in 1:tmax) {
+ too.cold[i] = initial*cold.lamda^(i-1)
+}
+
+for (i in 1:tmax) {
+ just.right[i] = initial*tasty.lamda^(i-1)
+}
+Time <- seq(0, 30, by = 1)
+pop <- data.frame(cbind(Time,too.cold, just.right, too.hot))
+colnames(pop) <- c("Time", "0.95", "1", "1.05")
+pop2 <- pop %>%
+  gather(lamda, Population, too.cold:too.hot)
+```
+
+```{r}
+pop.plot <- ggplot(pop2, aes(Time, Population, color = lamda)) + 
+  geom_point() + scale_color_manual(breaks = c("just.right", "too.hot", "too.cold"),
+                        values=c("orange", "blue", "red"))
+
+pop.plot
+```
+Answer the following question: *Give 2 reasons why real population data may not follow these real curves, even if the growth rates on average are equal to the values in this figure.*
+
+**Catastrophes and bonanzas!**
+# 3. Stochastic Population Growth: Uniform Distribution (+15)
+
+Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15. 
+```{r}
+pop.20 <- matrix(nrow = 51, ncol = 20)
+pop.20[1,] <- 15
+for (j in 1:dim(pop.20)[2]){
+  for (i in 2:dim(pop.20)[1]) {
+    current.pop <- pop.20[i-1,j]
+    pop.20[i,j] = current.pop*runif(1, min = 0.96, max = 1.06)
+}
+}
+time.20 <- seq(0, 51, by = 1)
+pop.time.20 <- data.frame(cbind(time.20, pop.20))
+pop.20.gathered <- pop.time.20 %>%
+  gather(Run, Population, 2:21)
+colnames(pop.20.gathered) <- c("Time", "Run", "Population")
+
+pop.20.plot <- ggplot(pop.20.gathered, aes(Time, Population, color = Run)) + 
+  geom_line()
+pop.20.plot
+```
+
+Answer the following question: *Adjust the code in this question to run 1000 trajectories to the fiftieth year. What is a 95% confidence interval for the population size in the 50th year? (HINT: Note I am not asking for a 95% confidence interval of the MEAN population size. You can answer this question in a similar way to bootstrapping exercises from last semester.)*
+
+```{r}
+pop.1000 <- matrix(nrow=51, ncol = 1000)
+pop.1000[1,] <- 15
+for (j in 1:dim(pop.1000)[2]){
+  for (i in 2:dim(pop.1000)[1]) {
+    current.pop <- pop.1000[i-1,j]
+    pop.1000[i,j] = current.pop*runif(1, min = 0.96, max = 1.06)
+}
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time <- cbind(Time2, pop.1000)
+quantile(plus.time[51,2:1001], probs=c(0.025,0.975))
+
+```
+
+# 4. Effect of Increasing Variation on Future Population Sizes (+15)
+
+Adjust the code from above to run at least 5 more simulations where you assess how increasing variation in $\lambda$ influences the probability of having a population with fewer than 15 individuals at year 50 (i.e. the starting population size in year zero). To do this, use 1000 trajectories and change the variation of $\lambda$ by changing the $\Delta \lambda$ in the uniform distribution to increasingly larger numbers, then for each record how many out of 1000 are below 15 individuals at year 50. Finally, plot the probability of having fewer than 15 individuals vs. the variance of lambda for the six (or more simulations). *What does the figure show and why does this happen?* (HINT: As you adjust your $\Delta \lambda$ do not allow $\lambda$ to be negative.)
+
+# 5. Stochastic Population Growth: Lognormal Distribution (+20)
+
+In actuality, a better model for stochastic variation in $\lambda$ is the lognormal distribution rather than the uniform distribution. In other words, we assume that the natural logarithm of lambda is normally distributed. As a reminder, the lognormal distribution is defined by two parameters: the mean on the log scale and the standard deviation on the log scale.  
+
+(a) Draw 50 random values from a lognormal distribution where the mean on the log scale is 0.1 and the standard deviation on the log scale is 0.5. What are the (a) arithmetic mean, (b) geometric mean, and (c) variance of the lambda values?
+
+(b) Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15, but this time assume $\lambda$ follows a lognormal distribution with parameters as described in part (a) and show the logarithm of population size on the y-axis.
+
+(c) Based on your figure, why do you think this type of stochastic variation is known as the "diffusion model" of population growth?
+
+# 6. Relation between Arithmetic and Geometric Mean (+15)
+
+In this question you are going to assess whether the relationship between the geometric mean, arithmetic mean, and variance of $\lambda$ on page 24 of the notes holds.
+
+(a) Algebraically rearrange the equation so that all arithmetic mean and geometric mean variables are on the left hand side (i.e. y) and variance is on the right hand side (x).  
+
+(b) What should the slope and intercept be of the relationship between the left hand side (y) and the variance of $\lambda$? 
+
+(c) Complete 10 simulations from a lognormal distribution where you change the mean and standard deviation on the log scale and then calculate the arithmetic mean, geometric mean and variance of $\lambda$ for each of the ten simulations. Then calculate the left hand side of the equation in (a). Record the four values for each simulation in a table where you report the mean and standard deviation on the log scale and the arithmetic mean, geometric mean, variance, and left hand side.
+
+(d) Perform a regression where you regress the left hand side as y and variance of lambda as x. Are the results of the regression consistent with your answer in (b)? Support your answer statistically with appropriate confidence intervals.
+
+# 7. Discrete Population Growth with Density Dependence (+15) (Modified from Bill Morris)
+
+Note that our model of population growth, although it now allows for stochasticity in $\lambda$, it does not include density-dependence. The Ricker equation is commonly used in fisheries to represent the dynamics of a density-dependent population.  The equation is:
+
+$N_{t+1} = N_t e^{r(1-\frac{N_t}{K})}$
+
+Your assignment is to write a program in R to explore the dynamics of the Ricker equation.
+
+To do this, you will need to start by specifying the parameters (i.e., constants) r and K, as well as the starting population size $N_0$ and the maximum time, $t_{\text{max}}$.  
+
+Start with r = 1 and K = 20. Set $N_0$ to 10. Choose $t_{\text{max}}$ to be large (say 1000). 
+
+Then create a vector to store all the $t_{\text{max}} + 1$ values of N (i.e. including $N_0$).  Then calculate all the future population sizes and store them in the vector. Note this is very similar to Q2 above, just a different (and more complicated) relationship between $N_{t+1}$ and $N_t$. 
+
+Now plot the last 50 years of the population trajectory, using the ```matplot()``` function.
+
+Once your program is working, use it to slowly increase the value of r, noting when the dynamics in the plot changes.  Describe the pattern of how the dynamics change as r increases. Ideally you should be able to get the three figures in Figure 9.3 of the Krebs reading. (+5 for each graph successfully achieved). The big idea here is that density-dependence can introduce a wide variety of population growth trajectories!!  
+
