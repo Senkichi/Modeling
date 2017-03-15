@@ -152,10 +152,11 @@ loglam.geometric <- exp(mean(log(loglam)))
 log(loglam.geometric/loglam.arithmetic)*(-2*loglam.arithmetic^2) = loglam.var
 ```
 
+**$-2{\lambda_a}^2*-ln(\frac{\lambda_g}{\lambda_a})=Var({\lambda_t})$**
 
 (b) What should the slope and intercept be of the relationship between the left hand side (y) and the variance of $\lambda$? 
 
-**
+**The slope will be -ln(\frac{\lambda_g}{\lambda_a}) and the intercept will be -2{\lambda_a}^2**
 
 (c) Complete 10 simulations from a lognormal distribution where you change the mean and standard deviation on the log scale and then calculate the arithmetic mean, geometric mean and variance of $\lambda$ for each of the ten simulations. Then calculate the left hand side of the equation in (a). Record the four values for each simulation in a table where you report the mean and standard deviation on the log scale and the arithmetic mean, geometric mean, variance, and left hand side.
 
