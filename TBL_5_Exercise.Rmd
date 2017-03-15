@@ -317,7 +317,8 @@ for (j in 1:dim(ricky)[1]){
 }
 }
 
-matplot(y = ricky[1,951:1000])
+matplot(y = ricky[1,951:1000], type = "pl")
+matplot(y = ricky[25, 951:1000])
 ```
 
 Once your program is working, use it to slowly increase the value of r, noting when the dynamics in the plot changes.  Describe the pattern of how the dynamics change as r increases. Ideally you should be able to get the three figures in Figure 9.3 of the Krebs reading. (+5 for each graph successfully achieved). The big idea here is that density-dependence can introduce a wide variety of population growth trajectories!!  
