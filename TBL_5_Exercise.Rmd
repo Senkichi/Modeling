@@ -71,6 +71,7 @@ y<-cbind(new.use$popsize.year,new.use$popsize.year.2,new.use$popsize.year.3)
 matplot(x,y,type="p",pch=c(16,1,10),col=c(1,1,1),xlab="Year",ylab="Population Size",main="Constant Population Growth")
 legend(0,55,legend = c("lambda 1.05","lambda 0.95","lambda 1.0"),pch=c(16,1,10),bty = "n")
 ```
+
 Answer the following question: *Give 2 reasons why real population data may not follow these real curves, even if the growth rates on average are equal to the values in this figure.*
 
 **Catastrophes and bonanzas!**
@@ -78,6 +79,7 @@ Answer the following question: *Give 2 reasons why real population data may not 
 
 Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15. 
 ```{r}
+set.seed(320)
 pop.20 <- matrix(nrow = 51, ncol = 20)
 pop.20[1,] <- 15
 for (j in 1:dim(pop.20)[2]){
@@ -100,6 +102,7 @@ pop.20.plot
 Answer the following question: *Adjust the code in this question to run 1000 trajectories to the fiftieth year. What is a 95% confidence interval for the population size in the 50th year? (HINT: Note I am not asking for a 95% confidence interval of the MEAN population size. You can answer this question in a similar way to bootstrapping exercises from last semester.)*
 
 ```{r}
+set.seed(3100)
 pop.1000 <- matrix(nrow=51, ncol = 1000)
 pop.1000[1,] <- 15
 for (j in 1:dim(pop.1000)[2]){
@@ -111,22 +114,125 @@ for (j in 1:dim(pop.1000)[2]){
 Time2 <- seq(0, 51, by = 1)
 plus.time <- cbind(Time2, pop.1000)
 quantile(plus.time[51,2:1001], probs=c(0.025,0.975))
-
+mean(plus.time[51,2:1001])
 ```
+
+**24.69925 (95% CI 16.04926 to 36.63537), not sure this is right**
 
 # 4. Effect of Increasing Variation on Future Population Sizes (+15)
 
 Adjust the code from above to run at least 5 more simulations where you assess how increasing variation in $\lambda$ influences the probability of having a population with fewer than 15 individuals at year 50 (i.e. the starting population size in year zero). To do this, use 1000 trajectories and change the variation of $\lambda$ by changing the $\Delta \lambda$ in the uniform distribution to increasingly larger numbers, then for each record how many out of 1000 are below 15 individuals at year 50. Finally, plot the probability of having fewer than 15 individuals vs. the variance of lambda for the six (or more simulations). *What does the figure show and why does this happen?* (HINT: As you adjust your $\Delta \lambda$ do not allow $\lambda$ to be negative.)
 
 ```{r}
+#4-1
+sum(plus.time<15)
+4314/51000
+#0.085
 
+set.seed(41)
+pop.4 <- matrix(nrow=51, ncol = 1000)
+pop.4[1,] <- 15
+for (j in 1:dim(pop.4)[2]){
+  for (i in 2:dim(pop.4)[1]) {
+    current.pop.4 <- pop.4[i-1,j]
+    pop.4[i,j] = current.pop.4*runif(1.01, min = 0.94, max = 1.08)
+  }
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time.4 <- cbind(Time2, pop.4)
+sum(plus.time.4<15)
+8419/51000
+#0.165 -- variation is 0.14
 
+#4-2
+set.seed(42)
+pop.42 <- matrix(nrow=51, ncol = 1000)
+pop.42[1,] <- 15
+for (j in 1:dim(pop.42)[2]){
+  for (i in 2:dim(pop.42)[1]) {
+    current.pop.42 <- pop.42[i-1,j]
+    pop.42[i,j] = current.pop.42*runif(1.01, min = 0.90, max = 1.12)
+  }
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time.42 <- cbind(Time2, pop.42)
+sum(plus.time.42<15)
+13513/51000
+#0.265-- variation is 0.22
+
+#4-3
+set.seed(43)
+pop.43 <- matrix(nrow=51, ncol = 1000)
+pop.43[1,] <- 15
+for (j in 1:dim(pop.43)[2]){
+  for (i in 2:dim(pop.43)[1]) {
+    current.pop.43 <- pop.43[i-1,j]
+    pop.43[i,j] = current.pop.43*runif(1.01, min = 0.85, max = 1.17)
+  }
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time.43 <- cbind(Time2, pop.43)
+sum(plus.time.43<15)
+19888/51000
+#0.390-- variation is 0.32
+
+#4-4
+set.seed(44)
+pop.44 <- matrix(nrow=51, ncol = 1000)
+pop.44[1,] <- 15
+for (j in 1:dim(pop.44)[2]){
+  for (i in 2:dim(pop.44)[1]) {
+    current.pop.44 <- pop.44[i-1,j]
+    pop.44[i,j] = current.pop.44*runif(1.01, min = 0.80, max = 1.22)
+  }
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time.44 <- cbind(Time2, pop.44)
+sum(plus.time.44<15)
+23085/51000
+#0.453-- variation is 0.42
+
+#4-5
+set.seed(45)
+pop.45 <- matrix(nrow=51, ncol = 1000)
+pop.45[1,] <- 15
+for (j in 1:dim(pop.45)[2]){
+  for (i in 2:dim(pop.45)[1]) {
+    current.pop.45 <- pop.45[i-1,j]
+    pop.45[i,j] = current.pop.45*runif(1.01, min = 0.75, max = 1.27)
+  }
+}
+Time2 <- seq(0, 51, by = 1)
+plus.time.45 <- cbind(Time2, pop.45)
+sum(plus.time.45<15)
+26205/51000
+#0.514-- variation is 0.52
+
+#plot of variation vs delta lambdas
+probability<-c(0.085,0.165,0.265,0.390,0.453,0.514)
+variance<-c(0.10,0.14,0.22,0.32,0.42,0.52)
+plot(probability,variance,xlab="Probability of fewer than 15 individuals",
+     ylab="Variance of Lambda",main="Variation in Populations")
+#as variation increases the probability of getting a population size that is less than 15
+#increases, this happens because the range in increasing
 ```
 # 5. Stochastic Population Growth: Lognormal Distribution (+20)
 
 In actuality, a better model for stochastic variation in $\lambda$ is the lognormal distribution rather than the uniform distribution. In other words, we assume that the natural logarithm of lambda is normally distributed. As a reminder, the lognormal distribution is defined by two parameters: the mean on the log scale and the standard deviation on the log scale.  
 
 (a) Draw 50 random values from a lognormal distribution where the mean on the log scale is 0.1 and the standard deviation on the log scale is 0.5. What are the (a) arithmetic mean, (b) geometric mean, and (c) variance of the lambda values?
+
+```{r,eval=T}
+#5a
+ran.lambda<-rlnorm(50,0.1,0.5)
+ran.lambda
+lambda.arithmetric<-mean(ran.lambda)
+lambda.geometric<-exp(mean(log(ran.lambda)))
+lambda.variance<-var(ran.lambda)
+lambda.geometric
+lambda.arithmetric
+lambda.variance
+```
 
 (b) Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15, but this time assume $\lambda$ follows a lognormal distribution with parameters as described in part (a) and show the logarithm of population size on the y-axis.
 
