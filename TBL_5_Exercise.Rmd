@@ -20,38 +20,56 @@ Please update on the progress on your meta-analysis papers.
 Construct a figure similar to page 10 on this week's lecture notes using the pseudocode on pages 7 and 9. However, instead of showing the results continuously, show as discrete estimates of the population size (i.e. lines not connected). Also, do a better job than your professor and show a legend on the figure (bad professor!). 
 
 ```{r}
-initial <- 15
-tmax <- 31
-hot.lamda <- 1.05
-cold.lamda <- 0.95
-tasty.lamda <- 1
-too.hot  <- numeric()
-for (i in 1:tmax) {
- too.hot[i] = initial*hot.lamda^(i-1)
+#2a
+library(ggplot2)
+time.zero<-0
+end.time<-30
+pop.initial<-15
+lambda<-1.05
+popsize.year<-numeric()
+popsize.time<-numeric()
+for(i in time.zero:end.time){
+  popsize.year[i+1]<-pop.initial*lambda^i
+  for(j in time.zero:end.time){
+    popsize.time[j+1]<-time.zero+j
+  }
 }
+newa<-cbind(popsize.time,popsize.year)
+newa
+qplot(popsize.time,popsize.year)
 
-too.cold <- numeric()
-just.right <- numeric()
-for (i in 1:tmax) {
- too.cold[i] = initial*cold.lamda^(i-1)
+#2b
+lambda.2<-0.95
+popsize.year.2<-numeric()
+popsize.time<-numeric()
+for(i in time.zero:end.time){
+  popsize.year.2[i+1]<-pop.initial*lambda.2^i
+  for(j in time.zero:end.time){
+    popsize.time[j+1]<-time.zero+j
+  }
 }
+newb<-cbind(popsize.time,popsize.year,popsize.year.2)
+newb
 
-for (i in 1:tmax) {
- just.right[i] = initial*tasty.lamda^(i-1)
+#2c
+lambda.3<-1
+popsize.year.3<-numeric()
+popsize.time<-numeric()
+for(i in time.zero:end.time){
+  popsize.year.3[i+1]<-pop.initial*lambda.3^i
+  for(j in time.zero:end.time){
+    popsize.time[j+1]<-time.zero+j
+  }
 }
-Time <- seq(0, 30, by = 1)
-pop <- data.frame(cbind(Time,too.cold, just.right, too.hot))
-colnames(pop) <- c("Time", "0.95", "1", "1.05")
-pop2 <- pop %>%
-  gather(lamda, Population, too.cold:too.hot)
-```
+new<-cbind(popsize.time,popsize.year,popsize.year.2,popsize.year.3)
+new
 
-```{r}
-pop.plot <- ggplot(pop2, aes(Time, Population, color = lamda)) + 
-  geom_point() + scale_color_manual(breaks = c("just.right", "too.hot", "too.cold"),
-                        values=c("orange", "blue", "red"))
-
-pop.plot
+#2 discrete plot with all three lambda values
+new.use<-data.frame(new)
+x<-new.use$popsize.time
+y<-cbind(new.use$popsize.year,new.use$popsize.year.2,new.use$popsize.year.3)
+matplot(x,y,type="p",pch=c(16,1,10),col=c(1,1,1),xlab="Year",ylab="Population Size",main="Constant Population Growth")
+legend(0,55,legend = c("lambda 1.05","lambda 0.95","lambda 1.0"),pch=c(16,1,10),bty = "n")
 ```
 Answer the following question: *Give 2 reasons why real population data may not follow these real curves, even if the growth rates on average are equal to the values in this figure.*
 
