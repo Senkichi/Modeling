@@ -182,13 +182,51 @@ In actuality, a better model for stochastic variation in $\lambda$ is the lognor
 
 In this question you are going to assess whether the relationship between the geometric mean, arithmetic mean, and variance of $\lambda$ on page 24 of the notes holds.
 
+```{r}
+
+loglam <- rlnorm(50, meanlog = 0.1, sdlog = 0.5)
+loglam.var <- var(loglam)
+loglam.arithmetic <- mean(loglam)
+loglam.geometric <- exp(mean(log(loglam)))
+
+```
+
+
 (a) Algebraically rearrange the equation so that all arithmetic mean and geometric mean variables are on the left hand side (i.e. y) and variance is on the right hand side (x).  
+
+```{r}
+log(loglam.geometric/loglam.arithmetic)*(-2*loglam.arithmetic^2) = loglam.var
+```
+
 
 (b) What should the slope and intercept be of the relationship between the left hand side (y) and the variance of $\lambda$? 
 
+**
+
 (c) Complete 10 simulations from a lognormal distribution where you change the mean and standard deviation on the log scale and then calculate the arithmetic mean, geometric mean and variance of $\lambda$ for each of the ten simulations. Then calculate the left hand side of the equation in (a). Record the four values for each simulation in a table where you report the mean and standard deviation on the log scale and the arithmetic mean, geometric mean, variance, and left hand side.
 
+```{r}
+mean.seq <- seq(from = 0.06, to = 0.15, by = 0.01)
+sd.seq <- seq(from = 0.46, to = 0.55, by = 0.01)
+loglam.mat <- matrix(nrow = 10, ncol = 6)
+for (j in 1:dim(loglam.mat)[1]){
+        loglam.mat[j,1] <- mean.seq[j]
+        loglam.mat[j,2] <- sd.seq[j]
+        sample <- rlnorm(50, meanlog = mean.seq[j], sdlog = sd.seq[j])
+        loglam.mat[j,3] <- mean(sample)
+        loglam.mat[j,4] <- exp(mean(sample))
+        loglam.mat[j,5] <- var(sample)
+        loglam.mat[j,6] <- log(loglam.mat[j,3]/loglam.mat[j,4])*(-2*loglam.mat[j,3]^2)
+}
+colnames(loglam.mat) <- c("logmean", "logsd", "amean", "gmean", "var", "left")
+loglam.frame <- data.frame(loglam.mat)
+```
 (d) Perform a regression where you regress the left hand side as y and variance of lambda as x. Are the results of the regression consistent with your answer in (b)? Support your answer statistically with appropriate confidence intervals.
+
+```{r}
+loglam.reg <- lm(left ~ var, data = loglam.frame)
+summary(loglam.reg)
+```
 
 # 7. Discrete Population Growth with Density Dependence (+15) (Modified from Bill Morris)
 
@@ -205,6 +243,21 @@ Start with r = 1 and K = 20. Set $N_0$ to 10. Choose $t_{\text{max}}$ to be larg
 Then create a vector to store all the $t_{\text{max}} + 1$ values of N (i.e. including $N_0$).  Then calculate all the future population sizes and store them in the vector. Note this is very similar to Q2 above, just a different (and more complicated) relationship between $N_{t+1}$ and $N_t$. 
 
 Now plot the last 50 years of the population trajectory, using the ```matplot()``` function.
+
+```{r}
+
+ricky <- matrix(nrow = 51, ncol = 1000)
+ricky[,1] <- 10
+ricky.seq <- seq(from = 1, to = 2, by = 0.02)
+for (j in 1:dim(ricky)[1]){
+  for (i in 2:dim(ricky)[2]) {
+    current.pop <- ricky[j,i-1]
+    ricky[j,i] = current.pop*exp(ricky.seq[j]*(1-(current.pop/20)))
+}
+}
+
+matplot(y = ricky[1,951:1000])
+```
 
 Once your program is working, use it to slowly increase the value of r, noting when the dynamics in the plot changes.  Describe the pattern of how the dynamics change as r increases. Ideally you should be able to get the three figures in Figure 9.3 of the Krebs reading. (+5 for each graph successfully achieved). The big idea here is that density-dependence can introduce a wide variety of population growth trajectories!!  
 
