@@ -306,6 +306,28 @@ Then create a vector to store all the $t_{\text{max}} + 1$ values of N (i.e. inc
 
 Now plot the last 50 years of the population trajectory, using the ```matplot()``` function.
 
+```{r} 
+#alex's code
+r<-1
+k<-20
+popsize<-10
+t.zero<-0
+t.max<-1000
+tmax1vals<-numeric()
+popsizeval<-numeric()
+for(i in t.zero:t.max){
+  popsizeval[i+1]<-popsize*exp(r*(1-(i/k)))
+  for(j in t.zero:t.max){
+    tmax1vals[j+1]<-0+j
+  }
+}
+
+rickers<-cbind(tmax1vals,popsizeval)
+rickers
+qplot(popsizeval,tmax1vals)#just used qplot to see if the function was correct
+```
+
+
 ```{r}
 
 ricky <- matrix(nrow = 51, ncol = 1000)
