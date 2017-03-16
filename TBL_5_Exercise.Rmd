@@ -225,6 +225,7 @@ In actuality, a better model for stochastic variation in $\lambda$ is the lognor
 
 ```{r,eval=T}
 #5a
+set.seed(5)
 ran.lambda<-rlnorm(50,0.1,0.5)
 ran.lambda
 lambda.arithmetric<-mean(ran.lambda)
@@ -237,6 +238,29 @@ lambda.variance
 
 (b) Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15, but this time assume $\lambda$ follows a lognormal distribution with parameters as described in part (a) and show the logarithm of population size on the y-axis.
 
+```{r,eval=T}
+stomat <- matrix(nrow = 51, ncol = 20)
+stomat[1,] <- 15
+for (j in 1:dim(stomat)[2]){
+  for (i in 2:dim(stomat)[1]) {
+    stobeg <- stomat[i-1,j]
+    stomat[i,j] = stobeg*rlnorm(1, meanlog=0.1, sdlog = 0.5)
+  }
+}
+time.55 <- seq(0, 51, by = 1)
+time.5 <- as.data.frame(cbind(time.55, stomat))
+sto<- time.5 %>%
+  gather(Run, Population, 2:21)
+colnames(sto) <- c("Time", "Run", "Population")
+sto.plot <- ggplot(sto, aes(Time, log(Population), color = Run)) + 
+  geom_line()+
+  ggtitle("Stochastic Variation")+
+  xlab("Year")+
+  ylab("Log Population Size")+
+  theme(legend.position='none')
+sto.plot
+```
+
 (c) Based on your figure, why do you think this type of stochastic variation is known as the "diffusion model" of population growth?
 
 # 6. Relation between Arithmetic and Geometric Mean (+15)
@@ -244,14 +268,11 @@ lambda.variance
 In this question you are going to assess whether the relationship between the geometric mean, arithmetic mean, and variance of $\lambda$ on page 24 of the notes holds.
 
 ```{r}
-
 loglam <- rlnorm(50, meanlog = 0.1, sdlog = 0.5)
 loglam.var <- var(loglam)
 loglam.arithmetic <- mean(loglam)
 loglam.geometric <- exp(mean(log(loglam)))
-
 ```
-
 
 (a) Algebraically rearrange the equation so that all arithmetic mean and geometric mean variables are on the left hand side (i.e. y) and variance is on the right hand side (x).  
 
@@ -283,6 +304,7 @@ for (j in 1:dim(loglam.mat)[1]){
 colnames(loglam.mat) <- c("logmean", "logsd", "amean", "gmean", "var", "left")
 loglam.frame <- data.frame(loglam.mat)
 ```
+
 (d) Perform a regression where you regress the left hand side as y and variance of lambda as x. Are the results of the regression consistent with your answer in (b)? Support your answer statistically with appropriate confidence intervals.
 
 ```{r}
@@ -313,16 +335,12 @@ k<-20
 popsize<-10
 t.zero<-0
 t.max<-1000
-tmax1vals<-numeric()
 popsizeval<-numeric()
 for(i in t.zero:t.max){
   popsizeval[i+1]<-popsize*exp(r*(1-(i/k)))
-  for(j in t.zero:t.max){
-    tmax1vals[j+1]<-0+j
-  }
 }
-
-rickers<-cbind(tmax1vals,popsizeval)
+time.7<-seq(0,50,by=1)
+rickers<-cbind(time.7,popsizeval)
 rickers
 qplot(popsizeval,tmax1vals)#just used qplot to see if the function was correct
 ```
