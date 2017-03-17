@@ -277,7 +277,7 @@ sto.plot
 
 (c) Based on your figure, why do you think this type of stochastic variation is known as the "diffusion model" of population growth?
 
-**This type of stochastic variation is know as the “diffusion model” of population growth because as time moves forward the variation of population sizes grows dramatically. This is similar to the process of diffusion in physics when molecules or atoms move from a region of high concentration to a region of low concentration and spread out in the process.  The word diffusion derives from the Latin word, diffundere, which means “to spread out”, which perfectly describes what happens to the possible population sizes in this model.**  
+**This type of stochastic variation is know as the diffusion model of population growth because as time moves forward the variation of population sizes grows dramatically. This is similar to the process of diffusion in physics when molecules or atoms move from a region of high concentration to a region of low concentration and spread out in the process.  The word diffusion derives from the Latin word, diffundere, which means to spread out, which perfectly describes what happens to the possible population sizes in this model.**  
 
 # 6. Relation between Arithmetic and Geometric Mean (+15)
 
