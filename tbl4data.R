@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 setwd("~/Documents/Spring 2017/Modeling") 
 ept<-read.csv(file="TBL4 Exercise Data.csv",header=T,na.strings=c("NC","NM"))
 library(nlme)
@@ -14,6 +15,22 @@ summary(model1)
   #significantly varies by city
 
 #2b-b
+=======
+setwd("~/Documents/Spring 2017/Modeling")
+EPT<-read.csv(file="TBL4 Exercise Data.csv",header=T,na.strings=c("NC","NM"))
+library(nlme)
+library(lme4)
+EPT
+#b
+
+
+ept$fMetro<-factor(ept$Metropolitan.Area.Short.Code)
+model1<-glm(PerEmbed~MANUII+Metropolitan.Area.Short.Code+MANUII:Metropolitan.Area.Short.Code,data=EPT)
+summary(model1)
+
+
+#c
+>>>>>>> Stashed changes
 library(multcomp)
 K1<-c(1,0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0) #this vector of the coefficients
 

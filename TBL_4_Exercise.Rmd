@@ -28,8 +28,26 @@ I have uploaded data from the EUSE study to D2L. Recall that the EUSE study inve
 setwd("~/Documents/Spring 2017/Modeling")
 ept<-read.csv(file="TBL4 Exercise Data.csv",header=T,na.strings=c("NC","NM"))
 library(nlme)
+<<<<<<< Updated upstream
 library(lme4)
 library(ggplot2)
+=======
+euse <- read.csv("TBL4 Exercise Data.csv")
+colnames(euse) <- c("station", "city", "MANUII", "PerEmbed", "EPT")
+euse$factor <- factor(euse$city)
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
 ```
 
 (a) Write out a coherent hypothesis and rationale for how you expect percent embeddedness to change as urbanization increases. (+5)

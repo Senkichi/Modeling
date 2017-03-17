@@ -1,3 +1,6 @@
+---
+output: pdf_document
+---
 <<<<<<< HEAD
 ---
 title: "TBL 5 Exercise: Simulating Population Growth"
@@ -75,6 +78,7 @@ legend(0,55,legend = c("lambda 1.05","lambda 0.95","lambda 1.0"),pch=c(16,1,10),
 Answer the following question: *Give 2 reasons why real population data may not follow these real curves, even if the growth rates on average are equal to the values in this figure.*
 
 **Catastrophes and bonanzas!**
+
 # 3. Stochastic Population Growth: Uniform Distribution (+15)
 
 Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15. 
@@ -226,6 +230,8 @@ plot(probability,variance,xlab="Probability of fewer than 15 individuals",
 #increases, this happens because the range in increasing
 ```
 
+**What does the figure show and why does this happen? As variation increases the probability of getting a population size that is less than 15 increases, this happens because the range is increasing.**
+
 # 5. Stochastic Population Growth: Lognormal Distribution (+20)
 
 In actuality, a better model for stochastic variation in $\lambda$ is the lognormal distribution rather than the uniform distribution. In other words, we assume that the natural logarithm of lambda is normally distributed. As a reminder, the lognormal distribution is defined by two parameters: the mean on the log scale and the standard deviation on the log scale.  
@@ -243,6 +249,12 @@ lambda.geometric
 lambda.arithmetric
 lambda.variance
 ```
+
+**a) The arithmetic mean is 1.312255**
+**b) The geometric mean is 1.141642**
+**c)  The variance is 0.508971**
+
+
 
 (b) Construct a figure similar to page 16 on this week's lecture notes using the pseudocode on page 15, but this time assume $\lambda$ follows a lognormal distribution with parameters as described in part (a) and show the logarithm of population size on the y-axis.
 
@@ -271,6 +283,8 @@ sto.plot
 
 (c) Based on your figure, why do you think this type of stochastic variation is known as the "diffusion model" of population growth?
 
+**This type of stochastic variation is know as the “diffusion model” of population growth because as time moves forward the variation of population sizes grows dramatically. This is similar to the process of diffusion in physics when molecules or atoms move from a region of high concentration to a region of low concentration and spread out in the process.  The word diffusion derives from the Latin word, diffundere, which means “to spread out”, which perfectly describes what happens to the possible population sizes in this model.**  
+
 # 6. Relation between Arithmetic and Geometric Mean (+15)
 
 In this question you are going to assess whether the relationship between the geometric mean, arithmetic mean, and variance of $\lambda$ on page 24 of the notes holds.
@@ -284,7 +298,7 @@ loglam.geometric <- exp(mean(log(loglam)))
 
 (a) Algebraically rearrange the equation so that all arithmetic mean and geometric mean variables are on the left hand side (i.e. y) and variance is on the right hand side (x).  
 
-```{r}
+```{r, eval=F}
 log(loglam.geometric/loglam.arithmetic)*(-2*loglam.arithmetic^2) = loglam.var
 ```
 
@@ -292,7 +306,7 @@ log(loglam.geometric/loglam.arithmetic)*(-2*loglam.arithmetic^2) = loglam.var
 
 (b) What should the slope and intercept be of the relationship between the left hand side (y) and the variance of $\lambda$? 
 
-**The slope will be -ln(\frac{\lambda_g}{\lambda_a}) and the intercept will be -2{\lambda_a}^2**
+**The slope will be -ln(\frac{\lambda_g}{\lambda_a}) and the intercept will be-2{\lambda_a}^2**
 
 (c) Complete 10 simulations from a lognormal distribution where you change the mean and standard deviation on the log scale and then calculate the arithmetic mean, geometric mean and variance of $\lambda$ for each of the ten simulations. Then calculate the left hand side of the equation in (a). Record the four values for each simulation in a table where you report the mean and standard deviation on the log scale and the arithmetic mean, geometric mean, variance, and left hand side.
 
@@ -350,6 +364,9 @@ for(i in t.zero:t.max){
 time.7<-seq(0,50,by=1)
 rickers<-cbind(time.7,popsizeval)
 rickers
+```
+
+```{r,eval=F}
 qplot(popsizeval,tmax1vals)#just used qplot to see if the function was correct
 ```
 
