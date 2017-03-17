@@ -1,6 +1,6 @@
 ---
 title: "TBL 5 Exercise: Simulating Population Growth"
-author: 
+authors: "Alex Ratcliff, Samuel Martin, Panmei Jiang, Jeffrey Hudson, Matt Andersen"
 date: "DUE: March 15, 2017"
 output: pdf_document
 ---
@@ -343,20 +343,80 @@ Then create a vector to store all the $t_{\text{max}} + 1$ values of N (i.e. inc
 
 Now plot the last 50 years of the population trajectory, using the ```matplot()``` function.
 
+
 ```{r}
-
-ricky <- matrix(nrow = 51, ncol = 1000)
-ricky[,1] <- 10
-ricky.seq <- seq(from = 0, to = 10, by = 0.2)
-for (j in 1:dim(ricky)[1]){
-  for (i in 2:dim(ricky)[2]) {
-    current.pop <- ricky[j,i-1]
-    ricky[j,i] = current.pop*exp(ricky.seq[j]*(1-(current.pop/20)))
+Na<-matrix(nrow=1001,ncol=1)
+ran.lambda<-matrix(nrow = 1001,ncol=1)
+ran.lambda[1,1]<- runif(1,-1,0)
+gen.a<-matrix(nrow=1001,ncol=1)
+gen.a[1,1]<-0
+r<-1
+K<-20
+Na[1,1]<-10#N0
+tmax=1000
+for(i in 2:1001){
+  gen.a[i-1,1]<-i-1
+  ran.lambda[i,1]<- runif(1,0,1)
+  r<-ran.lambda[i,1]
+  Na[i,1]=Na[i-1,1]*exp(r*(1-Na[i-1,1]/K))
 }
-}
+data.a<-cbind(gen.a,ran.lambda,Na)
+matplot(data.a[952:1001,1],data.a[952:1001,3], type="p",
+        xlab="generation",ylab="population",
+        main="figure a (9.3a) last 50 years")
+matplot(data.a[,1],data.a[,3], type="l",
+        xlab="generation",ylab="population",
+        main="figure 9.3a")
 
-matplot(y = ricky[1,951:1000], type = "pl")
-matplot(y = ricky[15, 951:1000], type = "pl")
+
+
+#figure 9.3b
+Nb<-matrix(nrow=1001,ncol=1)
+ran.lambda<-matrix(nrow = 1001,ncol=1)
+ran.lambda[1,1]<- runif(1,-1,0)
+gen.b<-matrix(nrow=1001,ncol=1)
+gen.b[1,1]<-0
+r<-1
+K<-20
+Nb[1,1]<-10#N0
+tmax=1000
+for(i in 2:1001){
+  gen.b[i-1,1]<-i-1
+  ran.lambda[i,1]<- runif(1,1,10)
+  r<-ran.lambda[i,1]
+  Nb[i,1]=Nb[i-1,1]*exp(r*(1-Nb[i-1,1]/K))
+}
+data.b<-cbind(gen.b,ran.lambda,Nb)
+matplot(data.b[952:1001,1],data.b[952:1001,3], type="p",
+        xlab="generation",ylab="population",
+        main="figure b (9.3b) last 50 years")
+matplot(data.b[,1],data.b[,3], type="l",
+        xlab="generation",ylab="population",
+        main="figure 9.3b")
+
+
+#figure 9.3c
+Nc<-matrix(nrow=1001,ncol=1)
+ran.lambda<-matrix(nrow = 1001,ncol=1)
+ran.lambda[1,1]<- runif(1,-1,0)
+gen.c<-matrix(nrow=1001,ncol=1)
+gen.c[1,1]<-0
+r<-1
+K<-20
+Nc[1,1]<-10#N0
+tmax=1000
+for(i in 2:1001){
+  gen.c[i-1,1]<-i-1
+  ran.lambda[i,1]<- runif(1,10,100)
+  r<-ran.lambda[i,1]
+  Nc[i,1]=Nc[i-1,1]*exp(r*(1-Nc[i-1,1]/K))
+}
+data.c<-cbind(gen.c,ran.lambda,Nc)
+matplot(data.c[952:1001,1],data.c[952:1001,3], type="p",
+        xlab="generation",ylab="population",
+        main="figure c (9.3c) last 50 years")
+matplot(data.c[,1],data.c[,3], type="l",
+        xlab="generation",ylab="population",
+        main="figure 9.3c")
 ```
-
 Once your program is working, use it to slowly increase the value of r, noting when the dynamics in the plot changes.  Describe the pattern of how the dynamics change as r increases. Ideally you should be able to get the three figures in Figure 9.3 of the Krebs reading. (+5 for each graph successfully achieved). The big idea here is that density-dependence can introduce a wide variety of population growth trajectories!!  
