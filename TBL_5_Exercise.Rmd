@@ -126,9 +126,10 @@ Adjust the code from above to run at least 5 more simulations where you assess h
 
 ```{r}
 #4-1
-sum(plus.time<15)
-4314/51000
-#0.085
+sum(plus.time[51,]<15)
+length(plus.time[51,])
+10/1001
+#0.00999 -- variation is 0.10
 
 set.seed(41)
 pop.4 <- matrix(nrow=51, ncol = 1000)
@@ -141,9 +142,10 @@ for (j in 1:dim(pop.4)[2]){
 }
 Time2 <- seq(0, 51, by = 1)
 plus.time.4 <- cbind(Time2, pop.4)
-sum(plus.time.4<15)
-8419/51000
-#0.165 -- variation is 0.14
+sum(plus.time.4[51,]<15)
+length(plus.time.4[51,])
+54/1001
+#0.0539 -- variation is 0.14
 
 #4-2
 set.seed(42)
@@ -157,9 +159,10 @@ for (j in 1:dim(pop.42)[2]){
 }
 Time2 <- seq(0, 51, by = 1)
 plus.time.42 <- cbind(Time2, pop.42)
-sum(plus.time.42<15)
-13513/51000
-#0.265-- variation is 0.22
+sum(plus.time.42[51,]<15)
+length(plus.time.42[51,])
+193/1001
+#0.1928-- variation is 0.22
 
 #4-3
 set.seed(43)
@@ -173,9 +176,10 @@ for (j in 1:dim(pop.43)[2]){
 }
 Time2 <- seq(0, 51, by = 1)
 plus.time.43 <- cbind(Time2, pop.43)
-sum(plus.time.43<15)
-19888/51000
-#0.390-- variation is 0.32
+sum(plus.time.43[51,]<15)
+length(plus.time.43[51,])
+351/1001
+#0.3506-- variation is 0.32
 
 #4-4
 set.seed(44)
@@ -189,9 +193,10 @@ for (j in 1:dim(pop.44)[2]){
 }
 Time2 <- seq(0, 51, by = 1)
 plus.time.44 <- cbind(Time2, pop.44)
-sum(plus.time.44<15)
-23085/51000
-#0.453-- variation is 0.42
+sum(plus.time.44[51,]<15)
+length(plus.time.44[51,])
+448/1001
+#0.4476-- variation is 0.42
 
 #4-5
 set.seed(45)
@@ -205,18 +210,22 @@ for (j in 1:dim(pop.45)[2]){
 }
 Time2 <- seq(0, 51, by = 1)
 plus.time.45 <- cbind(Time2, pop.45)
-sum(plus.time.45<15)
-26205/51000
-#0.514-- variation is 0.52
+sum(plus.time.45[51,]<15)
+length(plus.time.45[51,])
+535/1001
+#0.5345-- variation is 0.52
+#variance is max-min
 
 #plot of variation vs delta lambdas
-probability<-c(0.085,0.165,0.265,0.390,0.453,0.514)
+probability<-c(0.00999,0.0539,0.1928,0.3506,0.4476,0.5345)
 variance<-c(0.10,0.14,0.22,0.32,0.42,0.52)
+
 plot(probability,variance,xlab="Probability of fewer than 15 individuals",
      ylab="Variance of Lambda",main="Variation in Populations")
 #as variation increases the probability of getting a population size that is less than 15
 #increases, this happens because the range in increasing
 ```
+
 # 5. Stochastic Population Growth: Lognormal Distribution (+20)
 
 In actuality, a better model for stochastic variation in $\lambda$ is the lognormal distribution rather than the uniform distribution. In other words, we assume that the natural logarithm of lambda is normally distributed. As a reminder, the lognormal distribution is defined by two parameters: the mean on the log scale and the standard deviation on the log scale.  
@@ -224,7 +233,6 @@ In actuality, a better model for stochastic variation in $\lambda$ is the lognor
 (a) Draw 50 random values from a lognormal distribution where the mean on the log scale is 0.1 and the standard deviation on the log scale is 0.5. What are the (a) arithmetic mean, (b) geometric mean, and (c) variance of the lambda values?
 
 ```{r,eval=T}
-#5a
 set.seed(5)
 ran.lambda<-rlnorm(50,0.1,0.5)
 ran.lambda
