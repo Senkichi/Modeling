@@ -121,6 +121,8 @@ mean(plus.time[50,2:1001])
 #24.43871 (95% CI 15.94179 to 35.49669)
 ```
 
+**95% CI is 15.94179 to 35.49669**
+
 # 4. Effect of Increasing Variation on Future Population Sizes (+15)
 
 Adjust the code from above to run at least 5 more simulations where you assess how increasing variation in $\lambda$ influences the probability of having a population with fewer than 15 individuals at year 50 (i.e. the starting population size in year zero). To do this, use 1000 trajectories and change the variation of $\lambda$ by changing the $\Delta \lambda$ in the uniform distribution to increasingly larger numbers, then for each record how many out of 1000 are below 15 individuals at year 50. Finally, plot the probability of having fewer than 15 individuals vs. the variance of lambda for the six (or more simulations). *What does the figure show and why does this happen?* (HINT: As you adjust your $\Delta \lambda$ do not allow $\lambda$ to be negative.)
