@@ -348,8 +348,6 @@ Now plot the last 50 years of the population trajectory, using the ```matplot()`
 
 ```{r}
 Na<-matrix(nrow=1001,ncol=1)
-ran.lambda<-matrix(nrow = 1001,ncol=1)
-ran.lambda[1,1]<- runif(1,-1,0)
 gen.a<-matrix(nrow=1001,ncol=1)
 gen.a[1,1]<-0
 r<-1
@@ -358,15 +356,13 @@ Na[1,1]<-10#N0
 tmax=1000
 for(i in 2:1001){
   gen.a[i-1,1]<-i-1
-  ran.lambda[i,1]<- runif(1,0,1)
-  r<-ran.lambda[i,1]
   Na[i,1]=Na[i-1,1]*exp(r*(1-Na[i-1,1]/K))
 }
-data.a<-cbind(gen.a,ran.lambda,Na)
-matplot(data.a[952:1001,1],data.a[952:1001,3], type="p",
+data.a<-cbind(gen.a,Na)
+matplot(data.a[952:1001,1],data.a[952:1001,2], type="l",
         xlab="generation",ylab="population",
         main="figure a (9.3a) last 50 years")
-matplot(data.a[,1],data.a[,3], type="l",
+matplot(data.a[,1],data.a[,2], type="l",
         xlab="generation",ylab="population",
         main="figure 9.3a")
 
@@ -378,21 +374,19 @@ ran.lambda<-matrix(nrow = 1001,ncol=1)
 ran.lambda[1,1]<- runif(1,-1,0)
 gen.b<-matrix(nrow=1001,ncol=1)
 gen.b[1,1]<-0
-r<-1
+rb<-3
 K<-20
 Nb[1,1]<-10#N0
 tmax=1000
 for(i in 2:1001){
   gen.b[i-1,1]<-i-1
-  ran.lambda[i,1]<- runif(1,1,10)
-  r<-ran.lambda[i,1]
-  Nb[i,1]=Nb[i-1,1]*exp(r*(1-Nb[i-1,1]/K))
+  Nb[i,1]=Nb[i-1,1]*exp(rb*(1-Nb[i-1,1]/K))
 }
-data.b<-cbind(gen.b,ran.lambda,Nb)
-matplot(data.b[952:1001,1],data.b[952:1001,3], type="p",
+data.b<-cbind(gen.b,Nb)
+matplot(data.b[952:1001,1],data.b[952:1001,2], type="l",
         xlab="generation",ylab="population",
         main="figure b (9.3b) last 50 years")
-matplot(data.b[,1],data.b[,3], type="l",
+matplot(data.b[,1],data.b[,2], type="l",
         xlab="generation",ylab="population",
         main="figure 9.3b")
 
@@ -400,24 +394,22 @@ matplot(data.b[,1],data.b[,3], type="l",
 #figure 9.3c
 Nc<-matrix(nrow=1001,ncol=1)
 ran.lambda<-matrix(nrow = 1001,ncol=1)
-ran.lambda[1,1]<- runif(1,-1,0)
+
 gen.c<-matrix(nrow=1001,ncol=1)
 gen.c[1,1]<-0
-r<-1
+rc<-5
 K<-20
 Nc[1,1]<-10#N0
 tmax=1000
 for(i in 2:1001){
   gen.c[i-1,1]<-i-1
-  ran.lambda[i,1]<- runif(1,10,100)
-  r<-ran.lambda[i,1]
-  Nc[i,1]=Nc[i-1,1]*exp(r*(1-Nc[i-1,1]/K))
+  Nc[i,1]=Nc[i-1,1]*exp(rc*(1-Nc[i-1,1]/K))
 }
-data.c<-cbind(gen.c,ran.lambda,Nc)
-matplot(data.c[952:1001,1],data.c[952:1001,3], type="p",
+data.c<-cbind(gen.c,Nc)
+matplot(data.c[952:1001,1],data.c[952:1001,2], type="l",
         xlab="generation",ylab="population",
         main="figure c (9.3c) last 50 years")
-matplot(data.c[,1],data.c[,3], type="l",
+matplot(data.c[,1],data.c[,2], type="l",
         xlab="generation",ylab="population",
         main="figure 9.3c")
 ```
