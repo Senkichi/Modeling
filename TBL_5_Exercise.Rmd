@@ -1,8 +1,4 @@
 ---
-output: pdf_document
----
-<<<<<<< HEAD
----
 title: "TBL 5 Exercise: Simulating Population Growth"
 author: 
 date: "DUE: March 15, 2017"
@@ -23,8 +19,6 @@ Please update on the progress on your meta-analysis papers.
 Construct a figure similar to page 10 on this week's lecture notes using the pseudocode on pages 7 and 9. However, instead of showing the results continuously, show as discrete estimates of the population size (i.e. lines not connected). Also, do a better job than your professor and show a legend on the figure (bad professor!). 
 
 ```{r}
-#2a
-library(ggplot2)
 time.zero<-0
 end.time<-30
 pop.initial<-15
@@ -39,7 +33,9 @@ for(i in time.zero:end.time){
 }
 newa<-cbind(popsize.time,popsize.year)
 newa
-qplot(popsize.time,popsize.year)
+qplot(popsize.time,popsize.year,xlab="Year",
+      ylab="Population Size",
+      main="Discrete Constant Population Growth over 30 years")
 
 #2b
 lambda.2<-0.95
@@ -71,7 +67,10 @@ new
 new.use<-data.frame(new)
 x<-new.use$popsize.time
 y<-cbind(new.use$popsize.year,new.use$popsize.year.2,new.use$popsize.year.3)
-matplot(x,y,type="p",pch=c(16,1,10),col=c(1,1,1),xlab="Year",ylab="Population Size",main="Constant Population Growth")
+matplot(x,y,type="p",pch=c(16,1,10),
+        col=c(1,1,1),xlab="Year",
+        ylab="Population Size",
+        main="Constant Population Growth")
 legend(0,55,legend = c("lambda 1.05","lambda 0.95","lambda 1.0"),pch=c(16,1,10),bty = "n")
 ```
 
@@ -99,7 +98,7 @@ pop.20.gathered <- pop.time.20 %>%
 colnames(pop.20.gathered) <- c("Time", "Run", "Population")
 
 pop.20.plot <- ggplot(pop.20.gathered, aes(Time, Population, color = Run)) + 
-  geom_line()
+  geom_line()+ggtitle("Uniform Distribution: Stochastic Population Growth")
 pop.20.plot
 ```
 
@@ -107,22 +106,20 @@ Answer the following question: *Adjust the code in this question to run 1000 tra
 
 ```{r}
 set.seed(3100)
-pop.1000 <- matrix(nrow=51, ncol = 1000)
+pop.1000 <- matrix(nrow=50, ncol = 1000)
 pop.1000[1,] <- 15
 for (j in 1:dim(pop.1000)[2]){
   for (i in 2:dim(pop.1000)[1]) {
     current.pop <- pop.1000[i-1,j]
-    pop.1000[i,j] = current.pop*runif(1, min = 0.96, max = 1.06)
-}
+    pop.1000[i,j] = current.pop*runif(1.01, min = 0.96, max = 1.06)
+  }
 }
 Time2 <- seq(0, 50, by = 1)
-pop.1000 <- data.frame(pop.1000)
 plus.time <- cbind(Time2, pop.1000)
-quantile(plus.time[51,2:1001], probs=c(0.025,0.975))
-mean(plus.time[51,2:1001])
+quantile(plus.time[50,2:1001], probs=c(0.025,0.975))
+mean(plus.time[50,2:1001])
+#24.43871 (95% CI 15.94179 to 35.49669)
 ```
-
-**24.69925 (95% CI 16.04926 to 36.63537), not sure this is right**
 
 # 4. Effect of Increasing Variation on Future Population Sizes (+15)
 
@@ -130,9 +127,9 @@ Adjust the code from above to run at least 5 more simulations where you assess h
 
 ```{r}
 #4-1
-sum(plus.time[51,]<15)
-length(plus.time[51,])
-10/1001
+sum(plus.time[50,]<15)
+length(plus.time[50,])
+11/1001
 #0.00999 -- variation is 0.10
 
 set.seed(41)
@@ -272,12 +269,7 @@ time.5 <- as.data.frame(cbind(time.55, stomat))
 sto<- time.5 %>%
   gather(Run, Population, 2:21)
 colnames(sto) <- c("Time", "Run", "Population")
-sto.plot <- ggplot(sto, aes(Time, log(Population), color = Run)) + 
-  geom_line()+
-  ggtitle("Stochastic Variation")+
-  xlab("Year")+
-  ylab("Log Population Size")+
-  theme(legend.position='none')
+sto.plot <- ggplot(sto, aes(Time, log(Population), color = Run)) +geom_line()+ggtitle("Stochastic Population Growth: Lognormal Distribution")
 sto.plot
 ```
 
@@ -302,11 +294,12 @@ loglam.geometric <- exp(mean(log(loglam)))
 log(loglam.geometric/loglam.arithmetic)*(-2*loglam.arithmetic^2) = loglam.var
 ```
 
-**$-2{\lambda_a}^2*-ln(\frac{\lambda_g}{\lambda_a})=Var({\lambda_t})$**
+$-2{\lambda_a}^2*-ln(\frac{\lambda_g}{\lambda_a})=Var({\lambda_t})$
 
 (b) What should the slope and intercept be of the relationship between the left hand side (y) and the variance of $\lambda$? 
 
-**The slope will be -ln(\frac{\lambda_g}{\lambda_a}) and the intercept will be-2{\lambda_a}^2**
+**The slope will be:** $-ln(\frac{\lambda_g}{\lambda_a})$ 
+**The intercept will be:** $-2{\lambda_a}^2$
 
 (c) Complete 10 simulations from a lognormal distribution where you change the mean and standard deviation on the log scale and then calculate the arithmetic mean, geometric mean and variance of $\lambda$ for each of the ten simulations. Then calculate the left hand side of the equation in (a). Record the four values for each simulation in a table where you report the mean and standard deviation on the log scale and the arithmetic mean, geometric mean, variance, and left hand side.
 
@@ -350,27 +343,6 @@ Then create a vector to store all the $t_{\text{max}} + 1$ values of N (i.e. inc
 
 Now plot the last 50 years of the population trajectory, using the ```matplot()``` function.
 
-```{r} 
-#alex's code
-r<-1
-k<-20
-popsize<-10
-t.zero<-0
-t.max<-1000
-popsizeval<-numeric()
-for(i in t.zero:t.max){
-  popsizeval[i+1]<-popsize*exp(r*(1-(i/k)))
-}
-time.7<-seq(0,50,by=1)
-rickers<-cbind(time.7,popsizeval)
-rickers
-```
-
-```{r,eval=F}
-qplot(popsizeval,tmax1vals)#just used qplot to see if the function was correct
-```
-
-
 ```{r}
 
 ricky <- matrix(nrow = 51, ncol = 1000)
@@ -388,5 +360,3 @@ matplot(y = ricky[15, 951:1000], type = "pl")
 ```
 
 Once your program is working, use it to slowly increase the value of r, noting when the dynamics in the plot changes.  Describe the pattern of how the dynamics change as r increases. Ideally you should be able to get the three figures in Figure 9.3 of the Krebs reading. (+5 for each graph successfully achieved). The big idea here is that density-dependence can introduce a wide variety of population growth trajectories!!  
-
->>>>>>> origin/master
